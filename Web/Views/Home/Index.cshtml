@@ -1,0 +1,19 @@
+﻿@model Web.TheModelWithEverything
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h1 class="display-4">Welcome</h1>
+<p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@using (Html.BeginForm())
+{
+    @Html.BsTextBoxFor(m => m.Name)
+    @Html.BsPasswordFor(m => m.Password)
+    @Html.BsDatePickerFor(m => m.Birthday)
+    @Html.BsYesNoFor(m => m.CanYouEven)
+    @Html.BsCheckboxFor(m => m.CanYouEvenAgain)
+    @Html.BsEnumDropDownListFor(m => m.SelectEnumQ)
+    @Html.BsNullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
+    <button class="btn btn-primary" type="submit">Submit</button>
+}
