@@ -57,7 +57,7 @@ public static class HtmlHelperExtensions
         var name = html.NameFor(expression);
         var value = html.ValueFor(expression) == "True";
 
-        var isInvalid = html.ValidationMessageFor(expression) != null;
+        var isInvalid = html.IsInvalid(expression);
 
         var yesRadioBtn = RadioControlItem(html, id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes", 
             isChecked: value, isInvalid: isInvalid);
@@ -79,7 +79,7 @@ public static class HtmlHelperExtensions
         var errorMessage = html.ValidationMessageFor(expression, null, new { @class = "invalid-feedback" }, "div");
         
         var cssClasses = new StringBuilder("form-check-input ");
-        if (errorMessage != null) cssClasses.Append(InvalidClass).Append(' ');
+        if (html.IsInvalid(expression)) cssClasses.Append(InvalidClass).Append(' ');
         var checkbox = html.CheckBoxFor(expression, new { @class = cssClasses.ToString() });
         var label = html.LabelFor(expression, new { @class = "form-check-label" });
 
@@ -172,11 +172,10 @@ public static class HtmlHelperExtensions
         IDictionary<string, object> htmlAttributes,
         string controlCssClass = "form-control")
     {
-        var isInvalid = html.ValidationMessageFor(expression) != null;
-
+        var isInvalid = html.IsInvalid(expression);
         StringBuilder cssClass = new StringBuilder(controlCssClass).Append(' ');
 
-        if (isInvalid) cssClass.Append("is-invalid ");
+        if (isInvalid) cssClass.Append(InvalidClass).Append(' ');
         if (htmlAttributes.TryGetValue("class", out var givenCssClass))
         {
             cssClass.Append(givenCssClass).Append(' ');
@@ -191,6 +190,13 @@ public static class HtmlHelperExtensions
         var explorer = html.ViewData.ModelExplorer.GetExplorerForProperty(name);
         return explorer.Metadata.Description;
     }
+
+    public static bool IsInvalid<TProperty, TModel>(this IHtmlHelper<TModel> html,
+        Expression<Func<TModel, TProperty>> expression) {
+            var name = html.NameFor(expression);
+            var state = html.ViewData.ModelState.GetValidationState(name);
+            return state == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+        }
 
     private static TagBuilder RadioControlItem(IHtmlHelper html, string id, string name, object value, string text,
         bool disabled = false, bool isChecked = false, bool isInvalid = false)
