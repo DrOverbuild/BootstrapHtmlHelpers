@@ -4,6 +4,9 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>dev.reddin.BootstrapHtmlHelpers</PackageId>
+    <Version>0.0.1</Version>
+    <Authors>Jasper Reddin</Authors>
   </PropertyGroup>
 
   <ItemGroup>
