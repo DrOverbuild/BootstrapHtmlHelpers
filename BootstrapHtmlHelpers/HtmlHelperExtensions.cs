@@ -12,6 +12,15 @@ public static class HtmlHelperExtensions
 
     #region HTML Helpers
 
+    public static IHtmlContent BsLabelFor<TProperty, TModel>(this IHtmlHelper<TModel> html,
+        Expression<Func<TModel, TProperty>> expression,
+        object? htmlAttributes = null)
+    {
+        var expName = html.NameFor(expression);
+        var requiredCssClass = html.ViewData.ModelExplorer.GetExplorerForProperty(expName).Metadata.IsRequired ? "is-required" : "";
+        return html.LabelFor(expression, new { @class = $"form-label {requiredCssClass}" });
+    }
+
     public static IHtmlContent BsTextBoxFor<TProperty, TModel>(
         this IHtmlHelper<TModel> html,
         Expression<Func<TModel, TProperty>> expression,
@@ -59,9 +68,9 @@ public static class HtmlHelperExtensions
 
         var isInvalid = html.IsInvalid(expression);
 
-        var yesRadioBtn = RadioControlItem(html, id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes", 
+        var yesRadioBtn = RadioControlItem(html, id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
             isChecked: value, isInvalid: isInvalid);
-        var noRadioBtn = RadioControlItem(html, id: $"{idPrefix}-No", name: name, value: false, text: "No", 
+        var noRadioBtn = RadioControlItem(html, id: $"{idPrefix}-No", name: name, value: false, text: "No",
             isChecked: !value, isInvalid: isInvalid);
 
         var radioDiv = new TagBuilder("div");
@@ -77,7 +86,7 @@ public static class HtmlHelperExtensions
         Expression<Func<TModel, bool>> expression)
     {
         var errorMessage = html.ValidationMessageFor(expression, null, new { @class = "invalid-feedback" }, "div");
-        
+
         var cssClasses = new StringBuilder("form-check-input ");
         if (html.IsInvalid(expression)) cssClasses.Append(InvalidClass).Append(' ');
         var checkbox = html.CheckBoxFor(expression, new { @class = cssClasses.ToString() });
@@ -148,9 +157,8 @@ public static class HtmlHelperExtensions
         tagBuilder.AddCssClass("mb-3");
 
         var errorMessage = html.ValidationMessageFor(expression, null, new { @class = "invalid-feedback" }, "div");
-        var label = html.LabelFor(expression, new { @class = "form-label" });
 
-        tagBuilder.InnerHtml.AppendHtml(label);
+        tagBuilder.InnerHtml.AppendHtml(html.BsLabelFor(expression));
         tagBuilder.InnerHtml.AppendHtml(control);
         if (errorMessage != null) tagBuilder.InnerHtml.AppendHtml(errorMessage);
         tagBuilder.AppendElement("div", html.DescriptionFor(expression), "form-text");
@@ -192,11 +200,12 @@ public static class HtmlHelperExtensions
     }
 
     public static bool IsInvalid<TProperty, TModel>(this IHtmlHelper<TModel> html,
-        Expression<Func<TModel, TProperty>> expression) {
-            var name = html.NameFor(expression);
-            var state = html.ViewData.ModelState.GetValidationState(name);
-            return state == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
-        }
+        Expression<Func<TModel, TProperty>> expression)
+    {
+        var name = html.NameFor(expression);
+        var state = html.ViewData.ModelState.GetValidationState(name);
+        return state == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
+    }
 
     private static TagBuilder RadioControlItem(IHtmlHelper html, string id, string name, object value, string text,
         bool disabled = false, bool isChecked = false, bool isInvalid = false)

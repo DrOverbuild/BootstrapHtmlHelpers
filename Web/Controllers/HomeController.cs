@@ -17,7 +17,6 @@ public class HomeController : Controller
     public IActionResult Index()
     {
         return View(new TheModelWithEverything {
-            Birthday = DateTime.Now,
             CanYouEvenAgain = true,
             SelectEnumQ = SomeOptions.Agree,
             SelectEnumNullableQ = SomeOptions.Disagree
