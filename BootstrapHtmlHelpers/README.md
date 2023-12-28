@@ -3,6 +3,7 @@ Extensions for IHtmlHelper<TModel> that makes building Bootstrap forms mapped to
 * Each component is placed in a form group Div with Bootstrap class `mb-3`
 * Support for validation and error messages
 * Support for `DisplayAttribute`, including `Name`, `Prompt`, and `Description` (which is rendered below in a div element with the CSS class `form-text`).
+* Adds the CSS class `is-required` to `form-label` if the property for the expression is required.
 
 ## Example
 
@@ -94,4 +95,16 @@ If the enum property is nullable and a blank option is required, use:
 
 ```cshtml
 @Html.BsNullableEnumDropDownListFor(m => m.NullableEnumModelProperty)
+```
+
+## Required Indicator
+Labels for the form groups are automatically given the CSS class `is-required` if the property of the 
+model is required. To add a required indicator, typically a red asterisk, add this CSS:
+
+```css
+.form-label.is-required::after {
+  content: '*';
+  color: var(--bs-danger);
+  padding-left: 0.10rem;
+}
 ```
