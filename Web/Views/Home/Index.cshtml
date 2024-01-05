@@ -25,7 +25,7 @@ else if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBi
     @Html.BsDatePickerFor(m => m.Birthday)
     @Html.BsYesNoFor(m => m.CanYouEven)
     @Html.BsCheckboxFor(m => m.CanYouEvenAgain)
-    @Html.BsEnumDropDownListFor(m => m.SelectEnumQ)
+    @Html.BsEnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> {{"data-toggle","toggle"}})
     @Html.BsNullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
     <button class="btn btn-primary" type="submit">Submit</button>
 }

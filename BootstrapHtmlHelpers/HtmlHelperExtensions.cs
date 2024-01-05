@@ -27,9 +27,11 @@ public static class HtmlHelperExtensions
         object? htmlAttributes = null,
         string? format = null)
     {
-        var customAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
-        AddFormControlCssClassesFor(html, expression, customAttributes);
-        var textbox = html.TextBoxFor(expression, format, customAttributes);
+        if (htmlAttributes is not IDictionary<string, object> attrsDict) {
+            attrsDict = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
+        }
+        AddFormControlCssClassesFor(html, expression, attrsDict);
+        var textbox = html.TextBoxFor(expression, format, attrsDict);
         return html.FormGroupFor(expression, textbox);
     }
 
@@ -39,9 +41,11 @@ public static class HtmlHelperExtensions
         object? htmlAttributes = null,
         string? format = null)
     {
-        var customAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
-        AddFormControlCssClassesFor(html, expression, customAttributes);
-        var password = html.PasswordFor(expression, customAttributes);
+        if (htmlAttributes is not IDictionary<string, object> attrsDict) {
+            attrsDict = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
+        }
+        AddFormControlCssClassesFor(html, expression, attrsDict);
+        var password = html.PasswordFor(expression, attrsDict);
         return html.FormGroupFor(expression, password);
     }
 
@@ -50,10 +54,12 @@ public static class HtmlHelperExtensions
         Expression<Func<TModel, TProperty>> expression,
         object? htmlAttributes = null)
     {
-        var customAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
-        customAttributes["type"] = "date";
-        AddFormControlCssClassesFor(html, expression, customAttributes);
-        var textbox = html.TextBoxFor(expression, "{0:yyyy-MM-dd}", customAttributes);
+        if (htmlAttributes is not IDictionary<string, object> attrsDict) {
+            attrsDict = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
+        }
+        attrsDict["type"] = "date";
+        AddFormControlCssClassesFor(html, expression, attrsDict);
+        var textbox = html.TextBoxFor(expression, "{0:yyyy-MM-dd}", attrsDict);
         return html.FormGroupFor(expression, textbox);
     }
 
@@ -111,8 +117,11 @@ public static class HtmlHelperExtensions
         string? emptyFirstValueText = null,
         object? htmlAttributes = null)
     {
-        var customAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
-        AddFormControlCssClassesFor(html, expression, customAttributes, "form-select");
+        if (htmlAttributes is not IDictionary<string, object> attrsDict) {
+            attrsDict = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes) ?? new Dictionary<string, object>();
+        }
+
+        AddFormControlCssClassesFor(html, expression, attrsDict, "form-select");
         var selectItems = items.ToList();
 
         if (displayEmptyFirstValue)
@@ -120,7 +129,7 @@ public static class HtmlHelperExtensions
             selectItems.Insert(0, new SelectListItem() { Text = emptyFirstValueText ?? "" });
         }
 
-        var control = html.DropDownListFor(expression, selectItems, customAttributes);
+        var control = html.DropDownListFor(expression, selectItems, attrsDict);
         return html.FormGroupFor(expression, control);
     }
 
