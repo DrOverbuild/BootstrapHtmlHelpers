@@ -13,9 +13,10 @@ public class TheModelWithEverything
 
     public DateTime? Birthday { get; set; } // date picker
 
+    [Required]
     [Display(Name = "Can you even?", Description = "Select Yes if you can even. Select No if you can't even.")]
     [CantEven(ErrorMessage = "Come on man, you can't even get this right!")]
-    public bool CanYouEven { get; set; } // yes/no radio
+    public bool? CanYouEven { get; set; } // yes/no radio
 
     [Display(Name = "Again I ask, Can you even?", Description = "Repeat question")]
     [CantEven(ErrorMessage = "This must be true to continue!")]

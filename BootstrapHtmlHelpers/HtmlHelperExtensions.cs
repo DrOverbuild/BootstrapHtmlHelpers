@@ -59,19 +59,19 @@ public static class HtmlHelperExtensions
 
     public static IHtmlContent BsYesNoFor<TModel>(
         this IHtmlHelper<TModel> html,
-        Expression<Func<TModel, bool>> expression,
+        Expression<Func<TModel, bool?>> expression,
         RadioButtonLayout layout = RadioButtonLayout.Horizontal)
     {
         var idPrefix = html.IdFor(expression);
         var name = html.NameFor(expression);
-        var value = html.ValueFor(expression) == "True";
+        var value = html.ValueFor(expression);
 
         var isInvalid = html.IsInvalid(expression);
 
         var yesRadioBtn = RadioControlItem(html, id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
-            isChecked: value, isInvalid: isInvalid);
+            isChecked: value == "True", isInvalid: isInvalid);
         var noRadioBtn = RadioControlItem(html, id: $"{idPrefix}-No", name: name, value: false, text: "No",
-            isChecked: !value, isInvalid: isInvalid);
+            isChecked: value == "False", isInvalid: isInvalid);
 
         var radioDiv = new TagBuilder("div");
         if (layout == RadioButtonLayout.Horizontal) radioDiv.AddCssClass("d-flex gap-3");
