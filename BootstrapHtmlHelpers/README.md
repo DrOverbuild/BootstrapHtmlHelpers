@@ -28,7 +28,7 @@ With the model state calculated to be invalid, the above renders out to:
 
 ```cshtml
 <div class="mb-3">
-    <label class="form-label" for="Name">Name</label>
+    <label class="form-label is-required" for="Name">Name</label>
     <input class="form-control is-invalid " data-val="true" data-val-required="Invalid message" id="Name" name="Name" placeholder="Placeholder" type="text" value="">
     <div class="invalid-feedback field-validation-valid" data-valmsg-for="Name" data-valmsg-replace="true">
         Invalid messge
@@ -61,7 +61,8 @@ Datepicker:
 
 Yes/No Radio button group. This renders a group of radio buttons for boolean values. By default
 the layout is horizontal, but if you'd rather have a vertical layout for this control, add
-`RadioButtonLayout.Vertical`
+`RadioButtonLayout.Vertical`. This method supports nullable booleans too. If the value is null,
+nothing will be selected by default.
 
 ```cshtml
 @Html.BsYesNoFor(m => m.BooleanModelProperty)
@@ -97,9 +98,20 @@ If the enum property is nullable and a blank option is required, use:
 @Html.BsNullableEnumDropDownListFor(m => m.NullableEnumModelProperty)
 ```
 
+## HTML Attributes
+All extensions that support the anonymous object for adding additional HTML attributes also 
+support passing HTML attributes of type `IDictionary<string,object>`. Note that passing 
+`IDictionary<string,string>` will exhibit untintended behavior.
+
+```cshtml
+@Html.BsYesNoFor(m => m.BooleanModelProperty, new Dictionary<string, object> {
+    { "data-attribute", "attribute value" }
+})
+```
+
 ## Required Indicator
-Labels for the form groups are automatically given the CSS class `is-required` if the property of the 
-model is required. To add a required indicator, typically a red asterisk, add this CSS:
+Labels for the form groups are automatically given the CSS class `is-required` if the property
+of the model is required. To add a required indicator, typically a red asterisk, add this CSS:
 
 ```css
 .form-label.is-required::after {
