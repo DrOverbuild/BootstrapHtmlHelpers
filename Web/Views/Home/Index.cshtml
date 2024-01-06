@@ -8,24 +8,20 @@
 <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 @if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
 {
-    <div class="alert alert-danger" role="alert">
-        Model in invalid state.
-    </div>
+    <div class="alert alert-danger" role="alert">Model in invalid state.</div>
 }
 else if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid)
 {
-    <div class="alert alert-success" role="alert">
-        Data is valid.
-    </div>
+    <div class="alert alert-success" role="alert">Data is valid.</div>
 }
 @using (Html.BeginForm())
 {
-    @Html.BsTextBoxFor(m => m.Name)
+    @Html.BsTextBoxFor(m => m.Name, labelHtmlAttributes: new Dictionary<string, object> { { "data-item", "data" } })
     @Html.BsPasswordFor(m => m.Password)
     @Html.BsDatePickerFor(m => m.Birthday)
     @Html.BsYesNoFor(m => m.CanYouEven)
     @Html.BsCheckboxFor(m => m.CanYouEvenAgain)
-    @Html.BsEnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> {{"data-toggle","toggle"}})
+    @Html.BsEnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> { { "data-toggle", "toggle" } })
     @Html.BsNullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
     <button class="btn btn-primary" type="submit">Submit</button>
 }

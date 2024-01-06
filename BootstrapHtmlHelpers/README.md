@@ -109,6 +109,17 @@ support passing HTML attributes of type `IDictionary<string,object>`. Note that 
 })
 ```
 
+## HTML Label Attributes
+HTML attributes can be added to the label:
+
+```cshtml
+@Html.BsTextBoxFor(m => m.Property, labelHtmlAttributes: new { id = "id" })
+```
+
+This is supported for `BsTextBoxFor`, `BsPasswordFor`, `BsDatePickerFor`, `BsYesNoFor`, 
+`BsDropDownListFor`, `BsEnumDropDownListFor`, `BsNullableEnumDropDownListFor`, and
+`FormGroupFor`.
+
 ## Required Indicator
 Labels for the form groups are automatically given the CSS class `is-required` if the property
 of the model is required. To add a required indicator, typically a red asterisk, add this CSS:
