@@ -1,4 +1,5 @@
-Extensions for IHtmlHelper<TModel> that makes building Bootstrap forms mapped to MVC models super easy. Features:
+Class retrieved from an extension of IHtmlHelper<TModel> that makes building Bootstrap forms mapped to MVC models super 
+easy. Features:
 
 * Each component is placed in a form group Div with Bootstrap class `mb-3`
 * Support for validation and error messages
@@ -21,7 +22,10 @@ public class ExampleViewModel
 To build a simple text box:
 
 ```cshtml
-@Html.BsTextBoxFor(m => m.ModelProperty)
+@{
+    var bootstrap = Html.Bootstrap();
+}
+@bootstrap.TextBoxFor(m => m.ModelProperty)
 ```
 
 With the model state calculated to be invalid, the above renders out to:
@@ -44,25 +48,25 @@ With the model state calculated to be invalid, the above renders out to:
 Basic textbox:
 
 ```cshtml
-@Html.BsTextBoxFor(m => m.ModelProperty)
+@bootstrap.TextBoxFor(m => m.ModelProperty)
 ```
 
 Textarea: 
 
 ```cshtml
-@Html.BsTextAreaFor(m => m.ModelProperty, 5, 10)
+@bootstrap.TextAreaFor(m => m.ModelProperty, 5, 10)
 ```
 
 Textbox for passwords:
 
 ```cshtml
-@Html.BsPasswordFor(m => m.ModelPropety)
+@bootstrap.PasswordFor(m => m.ModelPropety)
 ```
 
 Datepicker:
 
 ```cshtml
-@Html.BsDatePickerFor(m => m.ModelProperty)
+@bootstrap.DatePickerFor(m => m.ModelProperty)
 ```
 
 Yes/No Radio button group. This renders a group of radio buttons for boolean values. By default
@@ -71,20 +75,20 @@ the layout is horizontal, but if you'd rather have a vertical layout for this co
 nothing will be selected by default.
 
 ```cshtml
-@Html.BsYesNoFor(m => m.BooleanModelProperty)
-@Html.BsYesNoFor(m => m.BooleanModelProperty, RadioButtonLayout.Vertical) @* vertical layout *@
+@bootstrap.YesNoFor(m => m.BooleanModelProperty)
+@bootstrap.YesNoFor(m => m.BooleanModelProperty, RadioButtonLayout.Vertical) @* vertical layout *@
 ```
 
 Checkbox for boolean values:
 
 ```cshtml
-@Html.BsCheckboxFor(m => m.BooleanModelProperty)
+@bootstrap.CheckboxFor(m => m.BooleanModelProperty)
 ```
 
 `<select>` dropdown for any list of strings:
 
 ```cshtml
-@Html.BsDropDownListFor(m => m.Name, new List<SelectListItem> {
+@bootstrap.DropDownListFor(m => m.Name, new List<SelectListItem> {
     new SelectListItem { Value = "value1", Text = "Display Value 1" },
     new SelectListItem { Value = "value2", Text = "Display Value 2" }, 
     new SelectListItem { Value = "value3", Text = "Display Value 3" } 
@@ -95,13 +99,13 @@ Checkbox for boolean values:
 method so this supports `DisplayAttribute.Name` right out of the box.
 
 ```cshtml
-@Html.BsEnumDropDownListFor(m => m.EnumModelProperty)
+@bootstrap.EnumDropDownListFor(m => m.EnumModelProperty)
 ```
 
 If the enum property is nullable and a blank option is required, use:
 
 ```cshtml
-@Html.BsNullableEnumDropDownListFor(m => m.NullableEnumModelProperty)
+@bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty)
 ```
 
 ## HTML Attributes
@@ -110,7 +114,7 @@ support passing HTML attributes of type `IDictionary<string,object>`. Note that 
 `IDictionary<string,string>` will exhibit untintended behavior.
 
 ```cshtml
-@Html.BsYesNoFor(m => m.BooleanModelProperty, new Dictionary<string, object> {
+@bootstrap.YesNoFor(m => m.BooleanModelProperty, new Dictionary<string, object> {
     { "data-attribute", "attribute value" }
 })
 ```
@@ -119,11 +123,11 @@ support passing HTML attributes of type `IDictionary<string,object>`. Note that 
 HTML attributes can be added to the label:
 
 ```cshtml
-@Html.BsTextBoxFor(m => m.Property, labelHtmlAttributes: new { id = "id" })
+@bootstrap.TextBoxFor(m => m.Property, labelHtmlAttributes: new { id = "id" })
 ```
 
-This is supported for `BsTextBoxFor`, `BsPasswordFor`, `BsDatePickerFor`, `BsYesNoFor`, 
-`BsDropDownListFor`, `BsEnumDropDownListFor`, `BsNullableEnumDropDownListFor`, and
+This is supported for `TextBoxFor`, `PasswordFor`, `DatePickerFor`, `YesNoFor`, 
+`DropDownListFor`, `EnumDropDownListFor`, `NullableEnumDropDownListFor`, and
 `FormGroupFor`.
 
 ## Required Indicator

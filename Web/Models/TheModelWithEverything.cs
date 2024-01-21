@@ -28,6 +28,13 @@ public class TheModelWithEverything
     [Display(Description = "Do you agree, but optional?")]
     [CantEven(ErrorMessage = "Cannot even")]
     public SomeOptions? SelectEnumNullableQ { get; set; }
+    public ClassWithMoreStuff ClassWithMoreStuff { get; set; }
+}
+
+public class ClassWithMoreStuff
+{
+    [Display(Name = "Variable 1")]
+    public string Var1 { get; set; }
 }
 
 public enum SomeOptions

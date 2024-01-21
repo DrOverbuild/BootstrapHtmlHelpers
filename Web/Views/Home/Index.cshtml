@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Home Page";
+    var bootstrap = Html.Bootstrap();
 }
 
 <h1 class="display-4">Welcome</h1>
@@ -16,13 +17,13 @@ else if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBi
 }
 @using (Html.BeginForm())
 {
-    @Html.BsTextBoxFor(m => m.Name, labelHtmlAttributes: new Dictionary<string, object> { { "data-item", "data" } })
-    @Html.BsTextAreaFor(m => m.Name, 5, 10)
-    @Html.BsPasswordFor(m => m.Password)
-    @Html.BsDatePickerFor(m => m.Birthday)
-    @Html.BsYesNoFor(m => m.CanYouEven)
-    @Html.BsCheckboxFor(m => m.CanYouEvenAgain)
-    @Html.BsEnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> { { "data-toggle", "toggle" } })
-    @Html.BsNullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
+    @bootstrap.TextBoxFor(m => m.Name, labelHtmlAttributes: new Dictionary<string, object> { { "data-item", "data" } })
+    @bootstrap.TextAreaFor(m => m.ClassWithMoreStuff.Var1, 5, 10)
+    @bootstrap.PasswordFor(m => m.Password)
+    @bootstrap.DatePickerFor(m => m.Birthday)
+    @bootstrap.YesNoFor(m => m.CanYouEven)
+    @bootstrap.CheckboxFor(m => m.CanYouEvenAgain)
+    @bootstrap.EnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> { { "data-toggle", "toggle" } })
+    @bootstrap.NullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
     <button class="btn btn-primary" type="submit">Submit</button>
 }
