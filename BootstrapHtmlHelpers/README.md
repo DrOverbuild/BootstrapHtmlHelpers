@@ -47,6 +47,12 @@ Basic textbox:
 @Html.BsTextBoxFor(m => m.ModelProperty)
 ```
 
+Textarea: 
+
+```cshtml
+@Html.BsTextAreaFor(m => m.ModelProperty, 5, 10)
+```
+
 Textbox for passwords:
 
 ```cshtml

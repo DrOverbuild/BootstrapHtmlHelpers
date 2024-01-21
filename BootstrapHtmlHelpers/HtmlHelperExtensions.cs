@@ -34,6 +34,20 @@ public static class HtmlHelperExtensions
         var textbox = html.TextBoxFor(expression, format, attrsDict);
         return html.FormGroupFor(expression, textbox, labelHtmlAttributes);
     }
+    
+    public static IHtmlContent BsTextAreaFor<TProperty, TModel>(
+        this IHtmlHelper<TModel> html,
+        Expression<Func<TModel, TProperty>> expression,
+        int rows,
+        int columns,
+        object? htmlAttributes = null,
+        object? labelHtmlAttributes = null)
+    {
+        var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes);
+        AddFormControlCssClassesFor(html, expression, attrsDict);
+        var textarea = html.TextAreaFor(expression, rows, columns, attrsDict);
+        return html.FormGroupFor(expression, textarea, labelHtmlAttributes);
+    }
 
     public static IHtmlContent BsPasswordFor<TProperty, TModel>(
         this IHtmlHelper<TModel> html,

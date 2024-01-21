@@ -17,6 +17,7 @@ else if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBi
 @using (Html.BeginForm())
 {
     @Html.BsTextBoxFor(m => m.Name, labelHtmlAttributes: new Dictionary<string, object> { { "data-item", "data" } })
+    @Html.BsTextAreaFor(m => m.Name, 5, 10)
     @Html.BsPasswordFor(m => m.Password)
     @Html.BsDatePickerFor(m => m.Birthday)
     @Html.BsYesNoFor(m => m.CanYouEven)
