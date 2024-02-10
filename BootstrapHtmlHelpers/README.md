@@ -5,6 +5,7 @@ easy. Features:
 * Support for validation and error messages
 * Support for `DisplayAttribute`, including `Name`, `Prompt`, and `Description` (which is rendered below in a div element with the CSS class `form-text`).
 * Adds the CSS class `is-required` to `form-label` if the property for the expression is required.
+* Extensions for `Controller` and `ViewDataDictionary` to add Bootstrap alerts, and a `RenderAlerts` extension for IHtmlHelper to render alerts in the views.
 
 ## Example
 
@@ -140,4 +141,35 @@ of the model is required. To add a required indicator, typically a red asterisk,
   color: var(--bs-danger);
   padding-left: 0.10rem;
 }
+```
+
+## Alerts
+
+Alerts can be added to views with the `AddAlert` extension. This extension is available on the Controller and ViewDataDictionary classes:
+
+```csharp
+# Within MVC Controller
+AddAlert(Alert.Success, "Alert message");
+
+# With view data:
+ViewData.AddAlert(Alert.Success, "Alert message");
+```
+
+Alert types are available for each Bootstrap alert classes:
+
+```csharp
+public const string Primary = "primary";
+public const string Secondary = "secondary";
+public const string Success = "success";
+public const string Danger = "danger";
+public const string Warning = "warning";
+public const string Info = "info";
+public const string Light = "light";
+public const string Dark = "dark";
+```
+
+In your views, render your alerts as follows: 
+
+```cshtml
+@Html.RenderAlerts()
 ```
