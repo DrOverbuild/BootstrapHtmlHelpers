@@ -149,23 +149,33 @@ Alerts can be added to views with the `AddAlert` extension. This extension is av
 
 ```csharp
 # Within MVC Controller
-AddAlert(Alert.Success, "Alert message");
+AddAlert(BootstrapColor.Success, "Alert message");
 
 # With view data:
-ViewData.AddAlert(Alert.Success, "Alert message");
+ViewData.AddAlert(BootstrapColor.Success, "Alert message");
 ```
 
-Alert types are available for each Bootstrap alert classes:
+Alerts can be added to TempData to save the alert for the next request. Useful when showing an alert after redirecting 
+to another action:
+
+```charp
+TempData.AddAlert(BootstrapColor.Success, "Alert Message");
+```
+
+Alert types are available for each Bootstrap color classes:
 
 ```csharp
-public const string Primary = "primary";
-public const string Secondary = "secondary";
-public const string Success = "success";
-public const string Danger = "danger";
-public const string Warning = "warning";
-public const string Info = "info";
-public const string Light = "light";
-public const string Dark = "dark";
+public enum BootstrapColor
+{
+    Primary,
+    Secondary,
+    Success,
+    Danger,
+    Warning,
+    Info,
+    Light,
+    Dark
+}
 ```
 
 In your views, render your alerts as follows: 
@@ -173,3 +183,12 @@ In your views, render your alerts as follows:
 ```cshtml
 @Html.RenderAlerts()
 ```
+
+To prevent rendering views from TempData, pass `false`:
+
+```cshtml
+@Html.RenderAlerts(false)
+```
+
+Note: The content of the alerts are not HTML encoded. RAW HTML will be rendered. Encode any user-generated strings you 
+pass to `AddAlert`.

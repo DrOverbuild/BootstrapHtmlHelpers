@@ -16,6 +16,15 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        if (ModelState.IsValid)
+        {
+            this.AddAlert(BootstrapColor.Success, "Data is <strong>valid</strong>.");
+        }
+        else
+        {
+            this.AddAlert(BootstrapColor.Danger, "Data is invalid.");
+        }
+        
         return View(new TheModelWithEverything {
             CanYouEvenAgain = true,
             SelectEnumQ = SomeOptions.Agree,
@@ -27,7 +36,22 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Index([FromForm] TheModelWithEverything model)
     {
+        if (ModelState.IsValid)
+        {
+            this.AddAlert(BootstrapColor.Success, "Data is valid.");
+        }
+        else
+        {
+            this.AddAlert(BootstrapColor.Danger, "Data is invalid.");
+        }
+        
         return View(model);
+    }
+
+    public IActionResult Alert()
+    {
+        TempData.AddAlert(BootstrapColor.Warning, "Warning Message");
+        return RedirectToAction("Index");
     }
 
     public IActionResult Privacy()

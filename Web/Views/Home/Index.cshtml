@@ -5,16 +5,11 @@
     var bootstrap = Html.Bootstrap();
 }
 
+@Html.RenderAlerts()
+
 <h1 class="display-4">Welcome</h1>
 <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-@if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid)
-{
-    <div class="alert alert-danger" role="alert">Model in invalid state.</div>
-}
-else if (ViewData.ModelState.ValidationState == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid)
-{
-    <div class="alert alert-success" role="alert">Data is valid.</div>
-}
+
 @using (Html.BeginForm())
 {
     @bootstrap.TextBoxFor(m => m.Name, labelHtmlAttributes: new Dictionary<string, object> { { "data-item", "data" } })
