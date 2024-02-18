@@ -14,7 +14,7 @@ public class HomeController : Controller
         _logger = logger;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(int page = 1)
     {
         if (ModelState.IsValid)
         {
@@ -29,7 +29,8 @@ public class HomeController : Controller
             CanYouEvenAgain = true,
             SelectEnumQ = SomeOptions.Agree,
             SelectEnumNullableQ = SomeOptions.Disagree,
-            ClassWithMoreStuff = new ClassWithMoreStuff()
+            ClassWithMoreStuff = new ClassWithMoreStuff(),
+            CurrentPage = page
         });
     }
 

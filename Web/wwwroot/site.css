@@ -3,3 +3,17 @@
     color: var(--bs-danger);
     padding-left: 0.10rem;
 }
+
+.page-text {
+    position: relative;
+    display: block;
+    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+    font-size: var(--bs-pagination-font-size);
+    background-color: var(--bs-pagination-bg);
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+    color: var(--bs-secondary);
+}
+
+.page-item:not(:first-child) .page-text {
+    margin-left: calc(var(--bs-border-width) * -1);
+}

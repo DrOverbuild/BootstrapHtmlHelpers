@@ -6,6 +6,7 @@ easy. Features:
 * Support for `DisplayAttribute`, including `Name`, `Prompt`, and `Description` (which is rendered below in a div element with the CSS class `form-text`).
 * Adds the CSS class `is-required` to `form-label` if the property for the expression is required.
 * Extensions for `Controller` and `ViewDataDictionary` to add Bootstrap alerts, and a `RenderAlerts` extension for IHtmlHelper to render alerts in the views.
+* Pagination links
 
 ## Example
 
@@ -192,3 +193,62 @@ To prevent rendering views from TempData, pass `false`:
 
 Note: The content of the alerts are not HTML encoded. RAW HTML will be rendered. Encode any user-generated strings you 
 pass to `AddAlert`.
+
+## Pagination
+This package features the `BsPagination` class with methods for rendering Bootstrap pagination links.
+
+```cshtml
+@BsPagination.Paginate(5, 10, page => Url.Action("Index", "Home", new { page })!)
+```
+
+The above will render the following:
+
+```html
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center ">
+        <li class="page-item "><a class="page-link" href="/?page=4">Previous</a></li>
+        <li class="page-item "><a class="page-link" href="/?page=1">1</a></li>
+        <li class="page-item"><span class="page-text">…</span></li>
+        <li class="page-item "><a class="page-link" href="/?page=4">4</a></li>
+        <li class="page-item active"><a class="page-link" href="/?page=5">5</a></li>
+        <li class="page-item "><a class="page-link" href="/?page=6">6</a></li>
+        <li class="page-item"><span class="page-text">…</span></li>
+        <li class="page-item "><a class="page-link" href="/?page=10">10</a></li>
+        <li class="page-item "><a class="page-link" href="/?page=6">Next</a></li>
+    </ul>
+</nav>
+```
+
+`Paginate` takes the following parameters:
+
+```cs
+int currentPage, int totalPages, Func<int, string> buildHref, string ulClasses = "", string nonLinkClass = "page-text"
+```
+| Parameter Name | Description                                                                                                                                                               |
+|----------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `currentPage`  | The current page. This page will be indicated with the `active` CSS class.                                                                                                |
+| `totalPages`   | Total pages available. If you have the count of total items, the total number of pages can be calculated with `BsPagination.TotalPages(totalItems, itemsPerPage)`         |
+| `buildHref`    | A lambda function that takes an integer as a parameter and returns a string. This method is called for each page item. Use this to build the href URL for each page.      |
+| `ulClasses`    | CSS classes for the `<ul>` element that is rendered. The `<ul>` element has `pagination justify-content-center`. The value of this parameter is added to this class list. |
+| `nonLinkClass` | The class for the `<span>` element that is rendered for non-link page items. By default the class is `page-text`.                                                         |
+
+### Non-link Page Items
+This pagination method renders a page item with an ellipsis character and no links. This indicates separation between 
+the first page and the previous page as well as separation between the next page and the last page. However, Bootstrap
+does not have good styling for this type of element, so we recommend adding this to your CSS:
+
+```css
+.page-text {
+    position: relative;
+    display: block;
+    padding: var(--bs-pagination-padding-y) var(--bs-pagination-padding-x);
+    font-size: var(--bs-pagination-font-size);
+    background-color: var(--bs-pagination-bg);
+    border: var(--bs-pagination-border-width) solid var(--bs-pagination-border-color);
+    color: var(--bs-secondary);
+}
+
+.page-item:not(:first-child) .page-text {
+    margin-left: calc(var(--bs-border-width) * -1);
+}
+```

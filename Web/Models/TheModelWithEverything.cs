@@ -29,6 +29,8 @@ public class TheModelWithEverything
     [CantEven(ErrorMessage = "Cannot even")]
     public SomeOptions? SelectEnumNullableQ { get; set; }
     public ClassWithMoreStuff ClassWithMoreStuff { get; set; }
+
+    public int CurrentPage { get; set; }
 }
 
 public class ClassWithMoreStuff

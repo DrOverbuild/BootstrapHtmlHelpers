@@ -7,6 +7,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BootstrapHtmlHelpers", "Boo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web", "Web\Web.csproj", "{3B99A6DF-E03B-4EE1-9064-DB4169FE7D7F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{DB746B55-3E21-4A26-B53D-2FE5FE8D9888}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{BBE2B7F2-FBD9-48A5-AA7D-EABE7E16D20E}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +31,9 @@ Global
 		{3B99A6DF-E03B-4EE1-9064-DB4169FE7D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B99A6DF-E03B-4EE1-9064-DB4169FE7D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B99A6DF-E03B-4EE1-9064-DB4169FE7D7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB746B55-3E21-4A26-B53D-2FE5FE8D9888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB746B55-3E21-4A26-B53D-2FE5FE8D9888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB746B55-3E21-4A26-B53D-2FE5FE8D9888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB746B55-3E21-4A26-B53D-2FE5FE8D9888}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

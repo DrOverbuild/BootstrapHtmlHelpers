@@ -20,5 +20,9 @@
     @bootstrap.CheckboxFor(m => m.CanYouEvenAgain)
     @bootstrap.EnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> { { "data-toggle", "toggle" } })
     @bootstrap.NullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
-    <button class="btn btn-primary" type="submit">Submit</button>
+    <button class="btn btn-primary mb-3" type="submit">Submit</button>
 }
+
+<h2 class="mt-3">Pagination Example</h2>
+<p>Current page retrieved from query parameters. Total pages: 10</p>
+@BsPagination.Paginate(Model.CurrentPage, 10, page => Url.Action("Index", "Home", new { page })!)
