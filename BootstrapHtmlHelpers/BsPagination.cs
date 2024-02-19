@@ -9,10 +9,20 @@ public static class BsPagination
     {
         return (int)Math.Ceiling((decimal)totalItems / itemsPerPage);
     }
+
+    public static int MinMax(int page, int totalPages)
+    {
+        return int.Max(1, int.Min(totalPages, page));
+    }
+
+    public static int Offset(int page, int perPage, int totalPages)
+    {
+        return (MinMax(page, totalPages) - 1) * perPage;
+    }
     
     public static IHtmlContent Paginate(int currentPage, int totalPages, Func<int, string> buildHref, string ulClasses = "", string nonLinkClass = "page-text")
     {
-        currentPage = int.Max(1, int.Min(totalPages, currentPage));
+        currentPage = MinMax(currentPage, totalPages);
         
         var ul = new TagBuilder("ul");
         ul.AddCssClass($"pagination justify-content-center {ulClasses}");

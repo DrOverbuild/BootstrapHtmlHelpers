@@ -173,4 +173,25 @@ public class PaginationTests
         var actualPages = BsPagination.TotalPages(totalItems, perPage);
         Assert.Equal(expectedPages, actualPages);
     }
+
+    [Theory]
+    [InlineData(1, 10, 1)]
+    [InlineData(0, 10, 1)]
+    [InlineData(11, 10, 10)]
+    public void Test_MinMax(int page, int totalPages, int expected)
+    {
+        var actual = BsPagination.MinMax(page, totalPages);
+        Assert.Equal(expected, actual);
+    }
+
+    [Theory]
+    [InlineData(1, 10, 10, 0)]
+    [InlineData(5, 10, 10, 40)]
+    [InlineData(12, 10, 10, 90)]
+    [InlineData(0, 10, 10, 0)]
+    public void Test_Offset(int page, int perPage, int totalPages, int expected)
+    {
+        var actual = BsPagination.Offset(page, perPage, totalPages);
+        Assert.Equal(expected, actual);
+    }
 }

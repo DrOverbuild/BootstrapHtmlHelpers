@@ -252,3 +252,12 @@ does not have good styling for this type of element, so we recommend adding this
     margin-left: calc(var(--bs-border-width) * -1);
 }
 ```
+
+### Calculation Utilities
+`BsPagination` provides three utility methods for making calculations related to pagination:
+
+| Method                                          | Description                                                                                                                                                     |
+|-------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `TotalPages(int totalItems, int itemsPerPage)`  | Calculate the number of pages based on the total number of items.                                                                                               |
+| `MinMax(int page, int totalPages)`              | Returns `page` unless it is below zero or above the value of `totalPages`, in which case it will return those values.                                           |
+| `Offset(int page, int perPage, int totalPages)` | Returns the SQL OFFSET value (or LINQ `Skip()` value) based on the number of items per page. `MinMax` is called in this method, so validation is taken care of. |
