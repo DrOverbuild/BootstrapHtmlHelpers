@@ -30,7 +30,8 @@ public class HomeController : Controller
             SelectEnumQ = SomeOptions.Agree,
             SelectEnumNullableQ = SomeOptions.Disagree,
             ClassWithMoreStuff = new ClassWithMoreStuff(),
-            CurrentPage = page
+            CurrentPage = page,
+            OptionsList = [SomeOptions.Disagree, SomeOptions.Agree]
         });
     }
 

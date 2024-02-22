@@ -110,6 +110,17 @@ If the enum property is nullable and a blank option is required, use:
 @bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty)
 ```
 
+Checkbox group for enums. As with `EnumDropDownListFor`, this uses the `IHtmlHelper<TModel>.GetEnumSelectList<TEnum>()`
+for proper model metadata. This will render a group of checkboxes, and when the form is submitted, the model's property 
+is set to the list of checked enum values. There is a limitation to reading the value of the model when rending a page.
+Because of that limitation, it is best to pass the current value of the model property as a string array, shown below.
+
+```cshtml
+@bootstrap.CheckboxGroupFor(m => m.ListOfEnum, selectedItems: Model.ListOfEnum?.Select(o => ((int)o).ToString()).ToArray())
+```
+
+
+
 ## HTML Attributes
 All extensions that support the anonymous object for adding additional HTML attributes also 
 support passing HTML attributes of type `IDictionary<string,object>`. Note that passing 

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq.Expressions;
 using System.Text;
 using Microsoft.AspNetCore.Html;
@@ -126,6 +127,48 @@ public class BootstrapTagBuilder<TModel>
         checkboxDiv.AppendElement("div", DescriptionFor(expression), "form-text");
 
         return checkboxDiv;
+    }
+
+    public IHtmlContent CheckboxGroupFor<TProperty>(
+        Expression<Func<TModel, IEnumerable<TProperty>>> expression, 
+        object? labelHtmlAttributes = null,
+        string[]? selectedItems = null)
+        where TProperty : struct, Enum
+    {
+        var cssClasses = new StringBuilder("form-check-input ");
+        var isInvalid = IsInvalid(expression);
+        if (isInvalid) cssClasses.Append(InvalidClass).Append(' ');
+        var name = _html.NameFor(expression);
+        
+        var selectList = _html.GetEnumSelectList<TProperty>();
+        HtmlContentBuilder builder = new HtmlContentBuilder();
+        foreach (var item in selectList)
+        {
+            var input = new TagBuilder("input");
+            input.AddCssClass(cssClasses.ToString());
+            input.Attributes["type"] = "checkbox";
+            input.Attributes["name"] = name;
+            input.Attributes["id"] = $"{name}_{item.Value}";
+            input.Attributes["value"] = item.Value;
+            if (item.Disabled) input.Attributes["disabled"] = "disabled";
+            if (selectedItems != null && selectedItems.Contains(item.Value)) input.Attributes["checked"] = "checked";
+            
+
+            var label = new TagBuilder("label");
+            label.AddCssClass("form-check-label");
+            label.Attributes["for"] = $"{name}_{item.Value}";
+            label.InnerHtml.Append(item.Text);
+
+            var checkboxDiv = new TagBuilder("div");
+            checkboxDiv.AddCssClass("form-check");
+            if (isInvalid) checkboxDiv.AddCssClass(InvalidClass);
+            checkboxDiv.InnerHtml.AppendHtml(input);
+            checkboxDiv.InnerHtml.AppendHtml(label);
+            builder.AppendHtml(checkboxDiv);
+        }
+        
+
+        return FormGroupFor(expression, builder, labelHtmlAttributes);
     }
 
     public IHtmlContent DropDownListFor<TProperty>(
