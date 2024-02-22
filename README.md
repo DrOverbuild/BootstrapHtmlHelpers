@@ -127,9 +127,12 @@ support passing HTML attributes of type `IDictionary<string,object>`. Note that 
 `IDictionary<string,string>` will exhibit unintended behavior.
 
 ```cshtml
+@bootstrap.TextBoxFor(m => m.Property, labelHtmlAttributes: new { id = "id" }) @* Adds HTML Attributes to the Label *@
+@bootstrap.TextBoxFor(m => m.Property, containerHtmlAttributes: new { id = "id" }) @* Adds HTML Attributes to the containing <div> *@
+@bootstrap.TextBoxFor(m => m.Property, inputAttributes: new { id = "id" }) @* Adds HTML Attributes to the <input> element *@
 @bootstrap.YesNoFor(m => m.BooleanModelProperty, new Dictionary<string, object> {
     { "data-attribute", "attribute value" }
-})
+}) @* Also adds HTML Attributes to the input *@
 ```
 
 Many of the rendered HTML elements have default class names. When additional classes are provided through the given
@@ -142,6 +145,7 @@ HTML attributes object, the classes are appended to the default class list.
 The resulting class list will be `form-control custom-input`.
 
 There are three elements where elements can usually be applied:
+
 - `inputAttributes` — The main input element. By default this input has the `form-control` class as well as whatever 
   attributes are applied via `IHtmlHelper<T>.LabelFor()`.
 - `labelHtmlAttributes` — The label for the control. Usually this has the `form-label` CSS class as well as 
@@ -163,25 +167,6 @@ The following table lists out which components and methods support each attribut
 | `EnumDropDownListFor`         | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
 | `NullableEnumDropDownListFor` | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
 | `FormGroupFor`                | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
-
-## HTML Label Attributes
-HTML attributes can be added to the label:
-
-```cshtml
-@bootstrap.TextBoxFor(m => m.Property, labelHtmlAttributes: new { id = "id" })
-```
-
-This is supported for the following `TextBoxFor`, `TextAreaFor`, `PasswordFor`, `DatePickerFor`, `YesNoFor`, `CheckboxFor`,
-`Check``DropDownListFor`, `EnumDropDownListFor`, `NullableEnumDropDownListFor`, and
-`FormGroupFor`.
-
-## HTML Input Attributes
-
-HTML attributes can be added to the rendered input tag:
-
-```cshtml
-@bootstrap.TextBoxFor(m => m.Property, inputAttributes: new { data-some-value = "value" })
-```
 
 ## Required Indicator
 Labels for the form groups are automatically given the CSS class `is-required` if the property
