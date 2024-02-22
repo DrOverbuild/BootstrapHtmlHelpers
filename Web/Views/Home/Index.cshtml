@@ -20,7 +20,7 @@
     @bootstrap.CheckboxFor(m => m.CanYouEvenAgain)
     @bootstrap.EnumDropDownListFor(m => m.SelectEnumQ, new Dictionary<string, object> { { "data-toggle", "toggle" } })
     @bootstrap.NullableEnumDropDownListFor(m => m.SelectEnumNullableQ)
-    @bootstrap.CheckboxGroupFor(m => m.OptionsList, selectedItems: Model.OptionsList?.Select(o => ((int)o).ToString()).ToArray())
+    @bootstrap.CheckboxGroupFor(m => m.OptionsList, selectedItems: Model.OptionsList?.Select(o => ((int)o).ToString()).ToArray(), containerHtmlAttributes: new { @class = "form-container" })
     <button class="btn btn-primary mb-3" type="submit">Submit</button>
 }
 

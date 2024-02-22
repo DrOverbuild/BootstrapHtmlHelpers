@@ -24,4 +24,12 @@ public static class TagBuilderExtensions
         inner.InnerHtml.Append(innerContent);
         tagBuilder.InnerHtml.AppendHtml(inner);
     }
+
+    public static void AddAttributes(this TagBuilder tagBuilder, IDictionary<string, object> attrs)
+    {
+        foreach (var attrsKey in attrs.Keys)
+        {
+            tagBuilder.Attributes[attrsKey] = attrs[attrsKey].ToString();
+        }
+    }
 }

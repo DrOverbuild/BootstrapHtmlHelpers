@@ -124,13 +124,45 @@ Because of that limitation, it is best to pass the current value of the model pr
 ## HTML Attributes
 All extensions that support the anonymous object for adding additional HTML attributes also 
 support passing HTML attributes of type `IDictionary<string,object>`. Note that passing 
-`IDictionary<string,string>` will exhibit untintended behavior.
+`IDictionary<string,string>` will exhibit unintended behavior.
 
 ```cshtml
 @bootstrap.YesNoFor(m => m.BooleanModelProperty, new Dictionary<string, object> {
     { "data-attribute", "attribute value" }
 })
 ```
+
+Many of the rendered HTML elements have default class names. When additional classes are provided through the given
+HTML attributes object, the classes are appended to the default class list.
+
+```cshtml
+@bootstrap.TextBoxFor(m => m.Property, inputAttributes: new { @class = "custom-input" })
+```
+
+The resulting class list will be `form-control custom-input`.
+
+There are three elements where elements can usually be applied:
+- `inputAttributes` — The main input element. By default this input has the `form-control` class as well as whatever 
+  attributes are applied via `IHtmlHelper<T>.LabelFor()`.
+- `labelHtmlAttributes` — The label for the control. Usually this has the `form-label` CSS class as well as 
+  `is-required` if the model metadata marks it as such. Other attributes are applied via `IHtmlHelper<T>.LabelFor()`.
+- `containerHtmlAttributes` — The containing `<div>` element. This is usually a container with just a `mb-3` CSS class.
+
+The following table lists out which components and methods support each attribute:
+
+| Method                        | Input Attributes           | Label Attributes | Container Attributes |
+|-------------------------------|----------------------------|------------------|----------------------|
+| `TextBoxFor`                  | ✅                          | ✅                | ✅                    |  
+| `TextAreaFor`                 | ✅                          | ✅                | ✅                    |
+| `PasswordFor`                 | ✅                          | ✅                | ✅                    |
+| `DatePickerFor`               | ✅                          | ✅                | ✅                    |
+| `YesNoFor`                    | ❌                          | ✅                | ✅                    |
+| `CheckboxFor`                 | ❌                          | ✅                | ✅                    |
+| `CheckboxGroupFor`            | ❌                          | ✅                | ✅                    |
+| `DropDownListFor`             | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
+| `EnumDropDownListFor`         | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
+| `NullableEnumDropDownListFor` | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
+| `FormGroupFor`                | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
 
 ## HTML Label Attributes
 HTML attributes can be added to the label:
@@ -139,9 +171,17 @@ HTML attributes can be added to the label:
 @bootstrap.TextBoxFor(m => m.Property, labelHtmlAttributes: new { id = "id" })
 ```
 
-This is supported for `TextBoxFor`, `PasswordFor`, `DatePickerFor`, `YesNoFor`, 
-`DropDownListFor`, `EnumDropDownListFor`, `NullableEnumDropDownListFor`, and
+This is supported for the following `TextBoxFor`, `TextAreaFor`, `PasswordFor`, `DatePickerFor`, `YesNoFor`, `CheckboxFor`,
+`Check``DropDownListFor`, `EnumDropDownListFor`, `NullableEnumDropDownListFor`, and
 `FormGroupFor`.
+
+## HTML Input Attributes
+
+HTML attributes can be added to the rendered input tag:
+
+```cshtml
+@bootstrap.TextBoxFor(m => m.Property, inputAttributes: new { data-some-value = "value" })
+```
 
 ## Required Indicator
 Labels for the form groups are automatically given the CSS class `is-required` if the property
