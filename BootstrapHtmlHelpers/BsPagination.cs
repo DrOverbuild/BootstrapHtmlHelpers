@@ -12,7 +12,7 @@ public static class BsPagination
 
     public static int MinMax(int page, int totalPages)
     {
-        return int.Max(1, int.Min(totalPages, page));
+        return Math.Max(1, Math.Min(totalPages, page));
     }
 
     public static int Offset(int page, int perPage, int totalPages)
