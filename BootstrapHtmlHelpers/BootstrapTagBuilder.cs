@@ -21,17 +21,7 @@ public class BootstrapTagBuilder<TModel>
         _expProv = new ModelExpressionProvider(_html.MetadataProvider);
     }
 
-    #region Component Builders
-
-    public IHtmlContent LabelFor<TProperty>(
-        Expression<Func<TModel, TProperty>> expression,
-        object? htmlAttributes = null)
-    {
-        var metadata = MetadataFor(expression);
-        var requiredCssClass = metadata.IsRequired ? "is-required" : "";
-        var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes, $"form-label {requiredCssClass}");
-        return _html.LabelFor(expression, attrsDict);
-    }
+    #region Component Group Builders
 
     public IHtmlContent TextBoxFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
@@ -40,9 +30,7 @@ public class BootstrapTagBuilder<TModel>
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
     {
-        var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes);
-        AddFormControlCssClassesFor(expression, attrsDict);
-        var textbox = _html.TextBoxFor(expression, format, attrsDict);
+        var textbox = TextBoxControlFor(expression, htmlAttributes, format);
         return FormGroupFor(expression, textbox, labelHtmlAttributes, containerHtmlAttributes);
     }
 
@@ -54,9 +42,7 @@ public class BootstrapTagBuilder<TModel>
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
     {
-        var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
-        AddFormControlCssClassesFor(expression, attrsDict);
-        var textarea = _html.TextAreaFor(expression, rows, columns, attrsDict);
+        var textarea = TextAreaControlFor(expression, rows, columns, inputAttributes);
         return FormGroupFor(expression, textarea, labelHtmlAttributes, containerHtmlAttributes);
     }
 
@@ -66,9 +52,7 @@ public class BootstrapTagBuilder<TModel>
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
     {
-        var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
-        AddFormControlCssClassesFor(expression, attrsDict);
-        var password = _html.PasswordFor(expression, attrsDict);
+        var password = PasswordControlFor(expression, inputAttributes);
         return FormGroupFor(expression, password, labelHtmlAttributes, containerHtmlAttributes);
     }
 
@@ -78,36 +62,18 @@ public class BootstrapTagBuilder<TModel>
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
     {
-        var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
-        attrsDict["type"] = "date";
-        AddFormControlCssClassesFor(expression, attrsDict);
-        var textbox = _html.TextBoxFor(expression, "{0:yyyy-MM-dd}", attrsDict);
+        var textbox = DatePickerControlFor(expression, inputAttributes);
         return FormGroupFor(expression, textbox, labelHtmlAttributes, containerHtmlAttributes);
     }
-
+    
     public IHtmlContent YesNoFor(
         Expression<Func<TModel, bool?>> expression,
         RadioButtonLayout layout = RadioButtonLayout.Horizontal,
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
     {
-        var idPrefix = _html.IdFor(expression);
-        var name = _html.NameFor(expression);
-        var value = _html.ValueFor(expression);
-
-        var isInvalid = IsInvalid(expression);
-
-        var yesRadioBtn = RadioControlItem(id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
-            isChecked: value == "True", isInvalid: isInvalid);
-        var noRadioBtn = RadioControlItem(id: $"{idPrefix}-No", name: name, value: false, text: "No",
-            isChecked: value == "False", isInvalid: isInvalid);
-
-        var radioDiv = new TagBuilder("div");
-        if (layout == RadioButtonLayout.Horizontal) radioDiv.AddCssClass("d-flex gap-3");
-        if (isInvalid) radioDiv.AddCssClass(InvalidClass);
-        radioDiv.InnerHtml.AppendHtml(yesRadioBtn);
-        radioDiv.InnerHtml.AppendHtml(noRadioBtn);
-        return FormGroupFor(expression, radioDiv, labelHtmlAttributes, containerHtmlAttributes);
+        var control = YesNoControlFor(expression, layout);
+        return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes);
     }
 
     public IHtmlContent CheckboxFor(
@@ -135,12 +101,135 @@ public class BootstrapTagBuilder<TModel>
 
         return checkboxDiv;
     }
-
+    
     public IHtmlContent CheckboxGroupFor<TProperty>(
         Expression<Func<TModel, IEnumerable<TProperty>>> expression, 
         string[]? selectedItems = null,
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
+        where TProperty : struct, Enum
+    {
+        var control = CheckboxGroupControlFor(expression, selectedItems);
+        return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes);
+    }
+
+    public IHtmlContent DropDownListFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        IEnumerable<SelectListItem> items,
+        bool displayEmptyFirstValue = true,
+        string? emptyFirstValueText = null,
+        object? selectHtmlAttributes = null,
+        object? labelHtmlAttributes = null,
+        object? containerHtmlAttributes = null)
+    {
+        var control = DropDownListControlFor(expression, items, displayEmptyFirstValue, emptyFirstValueText,
+            selectHtmlAttributes);
+        return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes);
+    }
+
+    public IHtmlContent EnumDropDownListFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        object? selectHtmlAttributes = null,
+        object? labelHtmlAttributes = null,
+        object? containerHtmlAttributes = null) where TProperty : struct, Enum
+    {
+        var control = EnumDropDownListControlFor(expression, selectHtmlAttributes);
+        return FormGroupFor(expression, control,
+            labelHtmlAttributes: labelHtmlAttributes,
+            containerHtmlAttributes: containerHtmlAttributes);
+    }
+
+    public IHtmlContent NullableEnumDropDownListFor<TProperty>(
+        Expression<Func<TModel, TProperty?>> expression,
+        object? selectHtmlAttributes = null,
+        object? labelHtmlAttributes = null,
+        object? containerHtmlAttributes = null) where TProperty : struct, Enum
+    {
+        var control = NullableEnumDropDownListControlFor(expression, selectHtmlAttributes);
+        return FormGroupFor(expression, control, 
+            labelHtmlAttributes: labelHtmlAttributes,
+            containerHtmlAttributes: containerHtmlAttributes);
+    }
+
+    #endregion
+    
+    #region Individual Component Builders
+    
+    public IHtmlContent LabelFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        object? htmlAttributes = null)
+    {
+        var metadata = MetadataFor(expression);
+        var requiredCssClass = metadata.IsRequired ? "is-required" : "";
+        var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes, $"form-label {requiredCssClass}");
+        return _html.LabelFor(expression, attrsDict);
+    }
+    
+    public IHtmlContent TextBoxControlFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        object? htmlAttributes = null,
+        string? format = null)
+    {
+        var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes);
+        AddFormControlCssClassesFor(expression, attrsDict);
+        return _html.TextBoxFor(expression, format, attrsDict);
+    }
+    
+    public IHtmlContent TextAreaControlFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        int rows,
+        int columns,
+        object? inputAttributes = null)
+    {
+        var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
+        AddFormControlCssClassesFor(expression, attrsDict);
+        return _html.TextAreaFor(expression, rows, columns, attrsDict);
+    }
+    
+    public IHtmlContent PasswordControlFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        object? inputAttributes = null)
+    {
+        var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
+        AddFormControlCssClassesFor(expression, attrsDict);
+        return _html.PasswordFor(expression, attrsDict);
+    }
+    
+    public IHtmlContent DatePickerControlFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        object? inputAttributes = null)
+    {
+        var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
+        attrsDict["type"] = "date";
+        AddFormControlCssClassesFor(expression, attrsDict);
+        return _html.TextBoxFor(expression, "{0:yyyy-MM-dd}", attrsDict);
+    }
+    
+    public IHtmlContent YesNoControlFor(
+        Expression<Func<TModel, bool?>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Horizontal)
+    {
+        var idPrefix = _html.IdFor(expression);
+        var name = _html.NameFor(expression);
+        var value = _html.ValueFor(expression);
+
+        var isInvalid = IsInvalid(expression);
+
+        var yesRadioBtn = RadioControlItem(id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
+            isChecked: value == "True", isInvalid: isInvalid);
+        var noRadioBtn = RadioControlItem(id: $"{idPrefix}-No", name: name, value: false, text: "No",
+            isChecked: value == "False", isInvalid: isInvalid);
+
+        var radioDiv = new TagBuilder("div");
+        if (layout == RadioButtonLayout.Horizontal) radioDiv.AddCssClass("d-flex gap-3");
+        if (isInvalid) radioDiv.AddCssClass(InvalidClass);
+        radioDiv.InnerHtml.AppendHtml(yesRadioBtn);
+        radioDiv.InnerHtml.AppendHtml(noRadioBtn);
+        return radioDiv;
+    }
+    
+    public IHtmlContent CheckboxGroupControlFor<TProperty>(
+        Expression<Func<TModel, IEnumerable<TProperty>>> expression, string[]? selectedItems)
         where TProperty : struct, Enum
     {
         var cssClasses = new StringBuilder("form-check-input ");
@@ -174,19 +263,16 @@ public class BootstrapTagBuilder<TModel>
             checkboxDiv.InnerHtml.AppendHtml(label);
             builder.AppendHtml(checkboxDiv);
         }
-        
 
-        return FormGroupFor(expression, builder, labelHtmlAttributes, containerHtmlAttributes);
+        return builder;
     }
-
-    public IHtmlContent DropDownListFor<TProperty>(
+    
+    public IHtmlContent DropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
         IEnumerable<SelectListItem> items,
         bool displayEmptyFirstValue = true,
         string? emptyFirstValueText = null,
-        object? selectHtmlAttributes = null,
-        object? labelHtmlAttributes = null,
-        object? containerHtmlAttributes = null)
+        object? selectHtmlAttributes = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(selectHtmlAttributes);
         AddFormControlCssClassesFor(expression, attrsDict, "form-select");
@@ -197,37 +283,28 @@ public class BootstrapTagBuilder<TModel>
             selectItems.Insert(0, new SelectListItem() { Text = emptyFirstValueText ?? "" });
         }
 
-        var control = _html.DropDownListFor(expression, selectItems, attrsDict);
-        return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes);
+        return _html.DropDownListFor(expression, selectItems, attrsDict);
     }
-
-    public IHtmlContent EnumDropDownListFor<TProperty>(
+    
+    public IHtmlContent EnumDropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
-        object? selectHtmlAttributes = null,
-        object? labelHtmlAttributes = null,
-        object? containerHtmlAttributes = null) where TProperty : struct, Enum
+        object? selectHtmlAttributes = null) where TProperty : struct, Enum
     {
         var selectList =
             _html.GetEnumSelectList<TProperty>(); // great built in funtion... it knows which enum is already selected!
-        return DropDownListFor(expression, selectList, displayEmptyFirstValue: false, 
-            selectHtmlAttributes: selectHtmlAttributes,
-            labelHtmlAttributes: labelHtmlAttributes,
-            containerHtmlAttributes: containerHtmlAttributes);
+        return DropDownListControlFor(expression, selectList, displayEmptyFirstValue: false, 
+            selectHtmlAttributes: selectHtmlAttributes);
     }
-
-    public IHtmlContent NullableEnumDropDownListFor<TProperty>(
+    
+    public IHtmlContent NullableEnumDropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty?>> expression,
-        object? selectHtmlAttributes = null,
-        object? labelHtmlAttributes = null,
-        object? containerHtmlAttributes = null) where TProperty : struct, Enum
+        object? selectHtmlAttributes = null) where TProperty : struct, Enum
     {
         var selectList = _html.GetEnumSelectList<TProperty>();
-        return DropDownListFor(expression, selectList, 
-            selectHtmlAttributes: selectHtmlAttributes,
-            labelHtmlAttributes: labelHtmlAttributes,
-            containerHtmlAttributes: containerHtmlAttributes);
+        return DropDownListControlFor(expression, selectList, 
+            selectHtmlAttributes: selectHtmlAttributes);
     }
-
+    
     #endregion
 
     #region Utility Methods
