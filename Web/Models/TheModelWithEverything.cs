@@ -18,6 +18,10 @@ public class TheModelWithEverything
     [CantEven(ErrorMessage = "Come on man, you can't even get this right!")]
     public bool? CanYouEven { get; set; } // yes/no radio
 
+    [Required]
+    [Display(Name = "Not Nullable Yes No")]
+    public bool NotNullableYesNo { get; set; } = true; // yes/no radio
+
     [Display(Name = "Again I ask, Can you even?", Description = "Repeat question")]
     [CantEven(ErrorMessage = "This must be true to continue!")]
     public bool CanYouEvenAgain { get; set; } // checkbox

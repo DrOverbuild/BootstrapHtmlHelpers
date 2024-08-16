@@ -206,6 +206,31 @@ public class BootstrapTagBuilder<TModel>
     }
     
     public IHtmlContent YesNoControlFor(
+        Expression<Func<TModel, bool>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Horizontal)
+    {
+        var idPrefix = _html.IdFor(expression);
+        var name = _html.NameFor(expression);
+        var value = _html.ValueFor(expression);
+
+        var isInvalid = IsInvalid(expression);
+
+        return RenderYesNoControl(layout, idPrefix, name, value, isInvalid);
+    }
+    
+    /// <summary>
+    /// To render the page with the form control initially blank, make the property a nullable boolean and add the
+    /// [Required] attribute. Rendering the initial form this way is recommended for good UX. If a Yes/No control is
+    /// required but a value is preselected, there's a greater chance of the user missing the control when filling the
+    /// form. 
+    /// </summary>
+    /// <remarks>
+    /// The YesNoControlFor overload that takes in the expression without the nullable boolean (<see cref="YesNoControlFor(System.Linq.Expressions.Expression{System.Func{TModel,bool}},BootstrapHtmlHelpers.RadioButtonLayout)"/>)
+    /// is still provided because IHtmlHelper&lt;T&gt;.ValueFor throws an exception when passing a non-nullable
+    /// boolean expression through this overload. For some reason the form group wrapper (<see cref="YesNoFor"/>) does
+    /// not need the same overload to render without throwing an exception.
+    /// </remarks>
+    public IHtmlContent YesNoControlFor(
         Expression<Func<TModel, bool?>> expression,
         RadioButtonLayout layout = RadioButtonLayout.Horizontal)
     {
@@ -215,19 +240,9 @@ public class BootstrapTagBuilder<TModel>
 
         var isInvalid = IsInvalid(expression);
 
-        var yesRadioBtn = RadioControlItem(id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
-            isChecked: value == "True", isInvalid: isInvalid);
-        var noRadioBtn = RadioControlItem(id: $"{idPrefix}-No", name: name, value: false, text: "No",
-            isChecked: value == "False", isInvalid: isInvalid);
-
-        var radioDiv = new TagBuilder("div");
-        if (layout == RadioButtonLayout.Horizontal) radioDiv.AddCssClass("d-flex gap-3");
-        if (isInvalid) radioDiv.AddCssClass(InvalidClass);
-        radioDiv.InnerHtml.AppendHtml(yesRadioBtn);
-        radioDiv.InnerHtml.AppendHtml(noRadioBtn);
-        return radioDiv;
+        return RenderYesNoControl(layout, idPrefix, name, value, isInvalid);
     }
-    
+
     public IHtmlContent CheckboxGroupControlFor<TProperty>(
         Expression<Func<TModel, IEnumerable<TProperty>>> expression, string[]? selectedItems)
         where TProperty : struct, Enum
@@ -386,6 +401,22 @@ public class BootstrapTagBuilder<TModel>
         div.InnerHtml.AppendHtml(label);
 
         return div;
+    }
+    
+    private TagBuilder RenderYesNoControl(RadioButtonLayout layout, string idPrefix, string name, string value,
+        bool isInvalid)
+    {
+        var yesRadioBtn = RadioControlItem(id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
+            isChecked: value == "True", isInvalid: isInvalid);
+        var noRadioBtn = RadioControlItem(id: $"{idPrefix}-No", name: name, value: false, text: "No",
+            isChecked: value == "False", isInvalid: isInvalid);
+
+        var radioDiv = new TagBuilder("div");
+        if (layout == RadioButtonLayout.Horizontal) radioDiv.AddCssClass("d-flex gap-3");
+        if (isInvalid) radioDiv.AddCssClass(InvalidClass);
+        radioDiv.InnerHtml.AppendHtml(yesRadioBtn);
+        radioDiv.InnerHtml.AppendHtml(noRadioBtn);
+        return radioDiv;
     }
 
     private ModelMetadata MetadataFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
