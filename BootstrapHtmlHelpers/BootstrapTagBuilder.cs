@@ -67,6 +67,16 @@ public class BootstrapTagBuilder<TModel>
     }
     
     public IHtmlContent YesNoFor(
+        Expression<Func<TModel, bool>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Horizontal,
+        object? labelHtmlAttributes = null,
+        object? containerHtmlAttributes = null)
+    {
+        var control = YesNoControlFor(expression, layout);
+        return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes);
+    }
+    
+    public IHtmlContent YesNoFor(
         Expression<Func<TModel, bool?>> expression,
         RadioButtonLayout layout = RadioButtonLayout.Horizontal,
         object? labelHtmlAttributes = null,
@@ -227,8 +237,7 @@ public class BootstrapTagBuilder<TModel>
     /// <remarks>
     /// The YesNoControlFor overload that takes in the expression without the nullable boolean (<see cref="YesNoControlFor(System.Linq.Expressions.Expression{System.Func{TModel,bool}},BootstrapHtmlHelpers.RadioButtonLayout)"/>)
     /// is still provided because IHtmlHelper&lt;T&gt;.ValueFor throws an exception when passing a non-nullable
-    /// boolean expression through this overload. For some reason the form group wrapper (<see cref="YesNoFor"/>) does
-    /// not need the same overload to render without throwing an exception.
+    /// boolean expression through this overload. 
     /// </remarks>
     public IHtmlContent YesNoControlFor(
         Expression<Func<TModel, bool?>> expression,
