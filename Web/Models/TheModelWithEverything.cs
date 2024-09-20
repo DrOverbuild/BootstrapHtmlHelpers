@@ -36,6 +36,11 @@ public class TheModelWithEverything
     [Display(Description = "Do you agree, but optional?")]
     [CantEven(ErrorMessage = "Cannot even")]
     public SomeOptions? SelectEnumNullableQ { get; set; }
+    
+    [Display(Description = "Nullable enum value with no initialized value and with empty first value text. Required so if the first option is still selected validation will fail.")]
+    [Required]
+    public SomeOptions? SelectEnumNullInitialValue  { get; set; }
+    
     public ClassWithMoreStuff ClassWithMoreStuff { get; set; }
 
     public int CurrentPage { get; set; }

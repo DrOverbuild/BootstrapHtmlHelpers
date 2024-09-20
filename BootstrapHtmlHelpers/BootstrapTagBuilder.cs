@@ -153,9 +153,10 @@ public class BootstrapTagBuilder<TModel>
         Expression<Func<TModel, TProperty?>> expression,
         object? selectHtmlAttributes = null,
         object? labelHtmlAttributes = null,
-        object? containerHtmlAttributes = null) where TProperty : struct, Enum
+        object? containerHtmlAttributes = null,
+        string? emptyFirstValueText = null) where TProperty : struct, Enum
     {
-        var control = NullableEnumDropDownListControlFor(expression, selectHtmlAttributes);
+        var control = NullableEnumDropDownListControlFor(expression, selectHtmlAttributes, emptyFirstValueText);
         return FormGroupFor(expression, control, 
             labelHtmlAttributes: labelHtmlAttributes,
             containerHtmlAttributes: containerHtmlAttributes);
@@ -322,10 +323,12 @@ public class BootstrapTagBuilder<TModel>
     
     public IHtmlContent NullableEnumDropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty?>> expression,
-        object? selectHtmlAttributes = null) where TProperty : struct, Enum
+        object? selectHtmlAttributes = null,
+        string? emptyFirstValueText = null) where TProperty : struct, Enum
     {
         var selectList = _html.GetEnumSelectList<TProperty>();
         return DropDownListControlFor(expression, selectList, 
+            emptyFirstValueText: emptyFirstValueText,
             selectHtmlAttributes: selectHtmlAttributes);
     }
     
