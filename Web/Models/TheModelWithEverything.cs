@@ -41,6 +41,10 @@ public class TheModelWithEverything
     [Required]
     public SomeOptions? SelectEnumNullInitialValue  { get; set; }
     
+    [Display(Name = "Horizontal Radio Buttons")]
+    [Required]
+    public OnlyThreeOptions? HorizontalRadioButtons  { get; set; }
+    
     public ClassWithMoreStuff ClassWithMoreStuff { get; set; }
 
     public int CurrentPage { get; set; }
@@ -61,4 +65,13 @@ public enum SomeOptions
     Agree,
     [Display(Name = "Strongly Agree")]
     StronglyAgree
+}
+
+public enum OnlyThreeOptions
+{
+    Short,
+    [Display(Name = "Ridiculously and Super Incredibly Long")]
+    IncrediblyLong,
+    [Display(Name = "Also Short")]
+    AlsoShort
 }

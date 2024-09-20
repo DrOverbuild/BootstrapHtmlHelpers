@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Primitives;
 
 namespace BootstrapHtmlHelpers;
 
@@ -163,6 +164,32 @@ public class BootstrapTagBuilder<TModel>
             labelHtmlAttributes: labelHtmlAttributes,
             containerHtmlAttributes: containerHtmlAttributes);
     }
+    
+    public IHtmlContent EnumRadioGroupFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Vertical,
+        object? labelHtmlAttributes = null,
+        object? containerHtmlAttributes = null,
+        object? radioGroupHtmlAttributes = null) where TProperty : struct, Enum
+    {
+        var control = EnumRadioGroupControlFor(expression, layout, radioGroupHtmlAttributes);
+        return FormGroupFor(expression, control,
+            labelHtmlAttributes: labelHtmlAttributes,
+            containerHtmlAttributes: containerHtmlAttributes);
+    }
+
+    public IHtmlContent NullableEnumRadioGroupFor<TProperty>(
+        Expression<Func<TModel, TProperty?>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Vertical,
+        object? labelHtmlAttributes = null,
+        object? containerHtmlAttributes = null,
+        object? radioGroupHtmlAttributes = null) where TProperty : struct, Enum
+    {
+        var control = NullableEnumRadioGroupControlFor(expression, layout, radioGroupHtmlAttributes);
+        return FormGroupFor(expression, control, 
+            labelHtmlAttributes: labelHtmlAttributes,
+            containerHtmlAttributes: containerHtmlAttributes);
+    }
 
     #endregion
     
@@ -220,7 +247,8 @@ public class BootstrapTagBuilder<TModel>
     
     public IHtmlContent YesNoControlFor(
         Expression<Func<TModel, bool>> expression,
-        RadioButtonLayout layout = RadioButtonLayout.Horizontal)
+        RadioButtonLayout layout = RadioButtonLayout.Horizontal,
+        object? radioGroupHtmlAttributes = null)
     {
         var idPrefix = _html.IdFor(expression);
         var name = _html.NameFor(expression);
@@ -228,7 +256,7 @@ public class BootstrapTagBuilder<TModel>
 
         var isInvalid = IsInvalid(expression);
 
-        return RenderYesNoControl(layout, idPrefix, name, value, isInvalid);
+        return RenderYesNoControl(layout, idPrefix, name, value, isInvalid, radioGroupHtmlAttributes);
     }
     
     /// <summary>
@@ -244,7 +272,8 @@ public class BootstrapTagBuilder<TModel>
     /// </remarks>
     public IHtmlContent YesNoControlFor(
         Expression<Func<TModel, bool?>> expression,
-        RadioButtonLayout layout = RadioButtonLayout.Horizontal)
+        RadioButtonLayout layout = RadioButtonLayout.Horizontal,
+        object? radioGroupHtmlAttributes = null)
     {
         var idPrefix = _html.IdFor(expression);
         var name = _html.NameFor(expression);
@@ -252,7 +281,7 @@ public class BootstrapTagBuilder<TModel>
 
         var isInvalid = IsInvalid(expression);
 
-        return RenderYesNoControl(layout, idPrefix, name, value, isInvalid);
+        return RenderYesNoControl(layout, idPrefix, name, value, isInvalid, radioGroupHtmlAttributes);
     }
 
     public IHtmlContent CheckboxGroupControlFor<TProperty>(
@@ -341,6 +370,44 @@ public class BootstrapTagBuilder<TModel>
             selectHtmlAttributes: selectHtmlAttributes);
     }
     
+    public IHtmlContent EnumRadioGroupControlFor<TProperty>(
+        Expression<Func<TModel, TProperty>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Vertical,
+        object? radioGroupHtmlAttributes = null) where TProperty : struct, Enum
+    {
+        var selectList = _html.GetEnumSelectList<TProperty>().ToList();
+        var idPrefix = _html.IdFor(expression);
+        var name = _html.NameFor(expression);
+        var modelValue = _html.ValueFor(expression);
+        var selectedItem = selectList.FirstOrDefault(i =>
+        { 
+            if (!Enum.TryParse(i.Value, out TProperty result)) return false;
+            return modelValue == result.ToString(); 
+        });
+        if (selectedItem != null) selectedItem.Selected = true;
+        var isInvalid = IsInvalid(expression);
+        return RenderRadioControl(layout, selectList, idPrefix, name, isInvalid, radioGroupHtmlAttributes);
+    }
+    
+    public IHtmlContent NullableEnumRadioGroupControlFor<TProperty>(
+        Expression<Func<TModel, TProperty?>> expression,
+        RadioButtonLayout layout = RadioButtonLayout.Vertical,
+        object? radioGroupHtmlAttributes = null) where TProperty : struct, Enum
+    {
+        var selectList = _html.GetEnumSelectList<TProperty>().ToList();
+        var idPrefix = _html.IdFor(expression);
+        var name = _html.NameFor(expression);
+        var modelValue = _html.ValueFor(expression);
+        var selectedItem = selectList.FirstOrDefault(i =>
+        { 
+            if (!Enum.TryParse(i.Value, out TProperty result)) return false;
+            return modelValue == result.ToString(); 
+        });
+        if (selectedItem != null) selectedItem.Selected = true;
+        var isInvalid = IsInvalid(expression);
+        return RenderRadioControl(layout, selectList, idPrefix, name, isInvalid, radioGroupHtmlAttributes);
+    }
+    
     #endregion
 
     #region Utility Methods
@@ -401,6 +468,46 @@ public class BootstrapTagBuilder<TModel>
         var state = _html.ViewData.ModelState.GetValidationState(name);
         return state == Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Invalid;
     }
+    
+    public TagBuilder RenderRadioControl(RadioButtonLayout layout, IEnumerable<SelectListItem> items, string idPrefix,
+        string name, bool isInvalid, object? radioGroupHtmlAttributes = null)
+    {
+        var attrsDict = ConvertAnonymousObjectIfNeeded(radioGroupHtmlAttributes);
+        var radioDiv = new TagBuilder("div");
+        StringBuilder cssClass = new StringBuilder("d-flex");
+        
+        if (isInvalid) cssClass.Append(InvalidClass);
+        
+        if (layout == RadioButtonLayout.Vertical)
+        {
+            cssClass.Append(" flex-column");
+        }
+        else
+        {
+            cssClass.Append(" gap-3");
+        }
+        
+        if (!attrsDict.TryAdd("class", cssClass.ToString()))
+        {
+            attrsDict["class"] = $"{attrsDict["class"]} {cssClass}";
+        }
+
+        radioDiv.AddAttributes(attrsDict);
+        
+        foreach (var item in items)
+        {
+            var radioBtn = RadioControlItem(
+                id: $"{idPrefix}-{item.Value}",
+                name: name,
+                value: item.Value,
+                text: item.Text,
+                isChecked: item.Selected,
+                isInvalid: isInvalid);
+            radioDiv.InnerHtml.AppendHtml(radioBtn);
+        }
+        
+        return radioDiv;
+    }
 
     private TagBuilder RadioControlItem(string id, string name, object value, string text,
         bool disabled = false, bool isChecked = false, bool isInvalid = false)
@@ -425,19 +532,15 @@ public class BootstrapTagBuilder<TModel>
     }
     
     private TagBuilder RenderYesNoControl(RadioButtonLayout layout, string idPrefix, string name, string value,
-        bool isInvalid)
+        bool isInvalid, object? radioGroupHtmlAttributes)
     {
-        var yesRadioBtn = RadioControlItem(id: $"{idPrefix}-Yes", name: name, value: true, text: "Yes",
-            isChecked: value == "True", isInvalid: isInvalid);
-        var noRadioBtn = RadioControlItem(id: $"{idPrefix}-No", name: name, value: false, text: "No",
-            isChecked: value == "False", isInvalid: isInvalid);
-
-        var radioDiv = new TagBuilder("div");
-        if (layout == RadioButtonLayout.Horizontal) radioDiv.AddCssClass("d-flex gap-3");
-        if (isInvalid) radioDiv.AddCssClass(InvalidClass);
-        radioDiv.InnerHtml.AppendHtml(yesRadioBtn);
-        radioDiv.InnerHtml.AppendHtml(noRadioBtn);
-        return radioDiv;
+        var yesNoItems = new SelectListItem[]
+        {
+            new("Yes", "True", value == "True"),
+            new("No", "False", value == "False")
+        };
+        
+        return RenderRadioControl(layout, yesNoItems, idPrefix, name, isInvalid, radioGroupHtmlAttributes);
     }
 
     private ModelMetadata MetadataFor<TProperty>(Expression<Func<TModel, TProperty>> expression)

@@ -105,14 +105,38 @@ method so this supports `DisplayAttribute.Name` right out of the box.
 ```
 
 If the enum property is nullable and a blank option is required, use `NullabelEnumDropDownListFor`. This method supports
-adding a custom text value for the empty first option, which is disabled by default, but can be endabled with the 
+adding a custom text value for the empty first option, which is disabled by default, but can be enabled with the 
 `emptyFirstOptionDisabled: false` parameter.
+
+Nullable enums have their own separate helper. If initializing the model, and an enum property has no initial value but
+is required for form validation, make the property nullable, add `[Required]`, and use `NullableEnumDropDownListFor` in
+your CSHTML.
 
 ```cshtml
 @bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty, emptyFirstValueText: "Choose...")
 
 // optionally leave the empty first option enabled
 @bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty, emptyFirstValueText: "Choose...", emptyFirstOptionDisabled: false)
+```
+
+Radio button group for enums. Similar to the Yes/No radio button group, but the options and selected value are 
+calculated from an Enum type. Layout can be either vertical or horizontal with `RadioButtonLayout`. By default it is
+horizontal. Set the layout to vertical and use `radioGroupHtmlAttributes:` to change the layout to horizontal at a
+specific layout. 
+
+As with select dropdowns, nullable enums have their own separate helper. If initializing the model, and an enum property 
+has no initial value but is required for form validation, make the property nullable, add `[Required]`, and use 
+`NullableEnumDropDownListFor` in your CSHTML.
+
+```cshtml
+// horizontal radio button group
+@bootstrap.EnumRadioGroupFor(m => m.EnumModelProperty)
+
+// vertical radio button group that switches to horizontal at medium breakpoint
+@bootstrap.EnumRadioGroupFor(m => m.EnumModelProperty, layout: RadioButtonLayout.Vertical, radioGroupHtmlAttributes: new { @class = "flex-md-row gap-md-3" })
+
+// nullable enum property
+@bootstrap.NullableEnumRadioGroupFor(m => m.NullableEnumModelProperty)
 ```
 
 Checkbox group for enums. As with `EnumDropDownListFor`, this uses the `IHtmlHelper<TModel>.GetEnumSelectList<TEnum>()`
@@ -138,6 +162,8 @@ basic control without labels, form text, validation, or margin, use the control 
 - `DropDownListControlFor(expression, items, displayEmptyFirstValue, emptyFirstValueText, selectHtmlAttributes)`
 - `EnumDropDownListControlFor(expression, selectHtmlAttributes)`
 - `NullableEnumDropDownListControlFor(expression, selectHtmlAttributes)`
+- `EnumRadioGroupControlFor(expression, layout, radioGroupHtmlAttributes)`
+- `NullableEnumRadioGroupControlFor(expression, layout, radioGroupHtmlAttributes)`
 
 Use `LabelFor(expression, htmlAttributes)` to take advantage of Bootstrap labels in a custom form group.
 

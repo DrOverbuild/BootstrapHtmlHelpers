@@ -28,7 +28,7 @@ public class HomeController : Controller
         return View(new TheModelWithEverything {
             CanYouEvenAgain = true,
             SelectEnumQ = SomeOptions.Agree,
-            SelectEnumNullableQ = SomeOptions.Disagree,
+            SelectEnumNullableQ = SomeOptions.StronglyDisagree,
             ClassWithMoreStuff = new ClassWithMoreStuff(),
             CurrentPage = page,
             OptionsList = [SomeOptions.Disagree, SomeOptions.Agree]
