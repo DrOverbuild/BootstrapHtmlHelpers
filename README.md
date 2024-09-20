@@ -104,10 +104,15 @@ method so this supports `DisplayAttribute.Name` right out of the box.
 @bootstrap.EnumDropDownListFor(m => m.EnumModelProperty)
 ```
 
-If the enum property is nullable and a blank option is required, use:
+If the enum property is nullable and a blank option is required, use `NullabelEnumDropDownListFor`. This method supports
+adding a custom text value for the empty first option, which is disabled by default, but can be endabled with the 
+`emptyFirstOptionDisabled: false` parameter.
 
 ```cshtml
-@bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty)
+@bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty, emptyFirstValueText: "Choose...")
+
+// optionally leave the empty first option enabled
+@bootstrap.NullableEnumDropDownListFor(m => m.NullableEnumModelProperty, emptyFirstValueText: "Choose...", emptyFirstOptionDisabled: false)
 ```
 
 Checkbox group for enums. As with `EnumDropDownListFor`, this uses the `IHtmlHelper<TModel>.GetEnumSelectList<TEnum>()`

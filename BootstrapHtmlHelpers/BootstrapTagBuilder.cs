@@ -128,12 +128,13 @@ public class BootstrapTagBuilder<TModel>
         IEnumerable<SelectListItem> items,
         bool displayEmptyFirstValue = true,
         string? emptyFirstValueText = null,
+        bool emptyFirstValueDisabled = true,
         object? selectHtmlAttributes = null,
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null)
     {
-        var control = DropDownListControlFor(expression, items, displayEmptyFirstValue, emptyFirstValueText,
-            selectHtmlAttributes);
+        var control = DropDownListControlFor(expression, items, displayEmptyFirstValue, emptyFirstValueText, 
+            emptyFirstValueDisabled, selectHtmlAttributes);
         return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes);
     }
 
@@ -154,9 +155,10 @@ public class BootstrapTagBuilder<TModel>
         object? selectHtmlAttributes = null,
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null,
-        string? emptyFirstValueText = null) where TProperty : struct, Enum
+        string? emptyFirstValueText = null,
+        bool emptyFirstValueDisabled = true) where TProperty : struct, Enum
     {
-        var control = NullableEnumDropDownListControlFor(expression, selectHtmlAttributes, emptyFirstValueText);
+        var control = NullableEnumDropDownListControlFor(expression, selectHtmlAttributes, emptyFirstValueText, emptyFirstValueDisabled);
         return FormGroupFor(expression, control, 
             labelHtmlAttributes: labelHtmlAttributes,
             containerHtmlAttributes: containerHtmlAttributes);
@@ -297,6 +299,7 @@ public class BootstrapTagBuilder<TModel>
         IEnumerable<SelectListItem> items,
         bool displayEmptyFirstValue = true,
         string? emptyFirstValueText = null,
+        bool emptyFirstValueDisabled = true,
         object? selectHtmlAttributes = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(selectHtmlAttributes);
@@ -305,7 +308,11 @@ public class BootstrapTagBuilder<TModel>
 
         if (displayEmptyFirstValue)
         {
-            selectItems.Insert(0, new SelectListItem() { Text = emptyFirstValueText ?? "" });
+            selectItems.Insert(0, new SelectListItem(
+                text: emptyFirstValueText ?? "", 
+                value: string.Empty, 
+                selected: !selectItems.Any(i => i.Selected), 
+                disabled: emptyFirstValueDisabled));
         }
 
         return _html.DropDownListFor(expression, selectItems, attrsDict);
@@ -324,11 +331,13 @@ public class BootstrapTagBuilder<TModel>
     public IHtmlContent NullableEnumDropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty?>> expression,
         object? selectHtmlAttributes = null,
-        string? emptyFirstValueText = null) where TProperty : struct, Enum
+        string? emptyFirstValueText = null,
+        bool emptyFirstValueDisabled = true) where TProperty : struct, Enum
     {
         var selectList = _html.GetEnumSelectList<TProperty>();
         return DropDownListControlFor(expression, selectList, 
             emptyFirstValueText: emptyFirstValueText,
+            emptyFirstValueDisabled: emptyFirstValueDisabled,
             selectHtmlAttributes: selectHtmlAttributes);
     }
     
