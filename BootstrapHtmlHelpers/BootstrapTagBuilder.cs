@@ -474,19 +474,12 @@ public class BootstrapTagBuilder<TModel>
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(radioGroupHtmlAttributes);
         var radioDiv = new TagBuilder("div");
-        StringBuilder cssClass = new StringBuilder("d-flex");
+        var cssClass = new StringBuilder("d-flex ");
         
         if (isInvalid) cssClass.Append(InvalidClass);
-        
-        if (layout == RadioButtonLayout.Vertical)
-        {
-            cssClass.Append(" flex-column");
-        }
-        else
-        {
-            cssClass.Append(" gap-3");
-        }
-        
+
+        cssClass.Append(layout == RadioButtonLayout.Vertical ? " flex-column" : " gap-3");
+
         if (!attrsDict.TryAdd("class", cssClass.ToString()))
         {
             attrsDict["class"] = $"{attrsDict["class"]} {cssClass}";
