@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>dev.reddin.BootstrapHtmlHelpers</PackageId>
-    <Version>0.0.18</Version>
+    <Version>0.0.19</Version>
     <Authors>Jasper Reddin</Authors>
     <PackageTags>mvc;bootstrap</PackageTags>
     <PackageProjectUrl>https://github.com/DrOverbuild/BootstrapHtmlHelpers/</PackageProjectUrl>
