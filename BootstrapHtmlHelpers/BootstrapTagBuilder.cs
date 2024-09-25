@@ -551,7 +551,12 @@ public class BootstrapTagBuilder<TModel>
     private static IDictionary<string, object> ConvertAnonymousObjectIfNeeded(object? obj,
         string? defaultCssClass = null)
     {
-        if (obj is not IDictionary<string, object> dict)
+        IDictionary<string, object> dict;
+        if (obj is IDictionary<string, object> originalDict)
+        {
+            dict = new Dictionary<string, object>(originalDict);
+        }
+        else
         {
             dict = HtmlHelper.AnonymousObjectToHtmlAttributes(obj) ?? new Dictionary<string, object>();
         }
