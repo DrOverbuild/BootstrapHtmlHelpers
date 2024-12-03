@@ -197,31 +197,33 @@ There are three elements where elements can usually be applied:
   attributes are applied via `IHtmlHelper<T>.TextBoxFor()`.
 - `labelHtmlAttributes` — The label for the control. Usually this has the `form-label` CSS class as well as 
   `is-required` if the model metadata marks it as such. Other attributes are applied via `IHtmlHelper<T>.LabelFor()`.
+- `validationHtmlAttributes` - The validation message rendered below the control. By default this element has class 
+  `invalid-feedback` as well as `data-*` attributes for jQuery validation.
 - `containerHtmlAttributes` — The containing `<div>` element. This is usually a container with just a `mb-3` CSS class.
 
 The following table lists out which components and methods support each attribute:
 
-| Method                                | Input Attributes           | Label Attributes | Container Attributes |
-|---------------------------------------|----------------------------|------------------|----------------------|
-| `TextBoxFor`                          | ✅ (`htmlAttributes`)       | ✅                | ✅                    |  
-| `TextAreaFor`                         | ✅                          | ✅                | ✅                    |
-| `PasswordFor`                         | ✅                          | ✅                | ✅                    |
-| `DatePickerFor`                       | ✅                          | ✅                | ✅                    |
-| `YesNoFor`                            | ❌                          | ✅                | ✅                    |
-| `CheckboxFor`                         | ❌                          | ✅                | ✅                    |
-| `CheckboxGroupFor`                    | ❌                          | ✅                | ✅                    |
-| `DropDownListFor`                     | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
-| `EnumDropDownListFor`                 | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
-| `NullableEnumDropDownListFor`         | ✅ (`selectHtmlAttributes`) | ✅                | ✅                    |
-| `TextBoxControlFor`                   | ✅ (`htmlAttributes`)       | ❌                | ❌                    |
-| `TextAreaControlFor`                  | ✅                          | ❌                | ❌                    |
-| `PasswordControlFor`                  | ✅                          | ❌                | ❌                    |
-| `YesNoControlFor`                     | ❌                          | ❌                | ❌                    |
-| `CheckboxGroupControlFor`             | ❌                          | ❌                | ❌                    |
-| `DropDownListControlFor`              | ✅ (`selectHtmlAttributes`) | ❌                | ❌                    |
-| `EnumDropDownListControlFor`          | ✅ (`selectHtmlAttributes`) | ❌                | ❌                    |
-| `NullableEnumDropDownListControlFor`  | ✅ (`selectHtmlAttributes`) | ❌                | ❌                    |
-| `FormGroupFor`                        | ❌                          | ✅                | ✅                    |
+| Method                               | Input Attributes           | Label Attributes | Validation Attributes | Container Attributes |
+|--------------------------------------|----------------------------|------------------|-----------------------|----------------------|
+| `TextBoxFor`                         | ✅ (`htmlAttributes`)       | ✅                | ✅                     | ✅                    |  
+| `TextAreaFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
+| `PasswordFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
+| `DatePickerFor`                      | ✅                          | ✅                | ✅                     | ✅                    |
+| `YesNoFor`                           | ❌                          | ✅                | ✅                     | ✅                    |
+| `CheckboxFor`                        | ❌                          | ✅                | ✅                     | ✅                    |
+| `CheckboxGroupFor`                   | ❌                          | ✅                | ✅                     | ✅                    |
+| `DropDownListFor`                    | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
+| `EnumDropDownListFor`                | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
+| `NullableEnumDropDownListFor`        | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
+| `TextBoxControlFor`                  | ✅ (`htmlAttributes`)       | ❌                |                       | ❌                    |
+| `TextAreaControlFor`                 | ✅                          | ❌                |                       | ❌                    |
+| `PasswordControlFor`                 | ✅                          | ❌                |                       | ❌                    |
+| `YesNoControlFor`                    | ❌                          | ❌                |                       | ❌                    |
+| `CheckboxGroupControlFor`            | ❌                          | ❌                |                       | ❌                    |
+| `DropDownListControlFor`             | ✅ (`selectHtmlAttributes`) | ❌                |                       | ❌                    |
+| `EnumDropDownListControlFor`         | ✅ (`selectHtmlAttributes`) | ❌                |                       | ❌                    |
+| `NullableEnumDropDownListControlFor` | ✅ (`selectHtmlAttributes`) | ❌                |                       | ❌                    |
+| `FormGroupFor`                       | ❌                          | ✅                | ✅                     | ✅                    |
 
 ## Required Indicator
 Labels for the form groups are automatically given the CSS class `is-required` if the property
