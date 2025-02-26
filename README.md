@@ -210,7 +210,7 @@ The following table lists out which components and methods support each attribut
 | `PasswordFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
 | `DatePickerFor`                      | ✅                          | ✅                | ✅                     | ✅                    |
 | `YesNoFor`                           | ❌                          | ✅                | ✅                     | ✅                    |
-| `CheckboxFor`                        | ❌                          | ✅                | ✅                     | ✅                    |
+| `CheckboxFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
 | `CheckboxGroupFor`                   | ❌                          | ✅                | ✅                     | ✅                    |
 | `DropDownListFor`                    | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
 | `EnumDropDownListFor`                | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |

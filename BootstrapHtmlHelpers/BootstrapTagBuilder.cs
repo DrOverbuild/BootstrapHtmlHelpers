@@ -95,6 +95,7 @@ public class BootstrapTagBuilder<TModel>
 
     public IHtmlContent CheckboxFor(
         Expression<Func<TModel, bool>> expression,
+        object? htmlAttributes = null,
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
@@ -102,9 +103,9 @@ public class BootstrapTagBuilder<TModel>
         var validationAttrs = ConvertAnonymousObjectIfNeeded(validationHtmlAttributes, "invalid-feedback");
         var errorMessage = _html.ValidationMessageFor(expression, null, validationAttrs, "div");
 
-        var cssClasses = new StringBuilder("form-check-input ");
-        if (IsInvalid(expression)) cssClasses.Append(InvalidClass).Append(' ');
-        var checkbox = _html.CheckBoxFor(expression, new { @class = cssClasses.ToString() });
+        var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes);
+        AddFormControlCssClassesFor(expression, attrsDict, "form-check-input ");
+        var checkbox = _html.CheckBoxFor(expression, attrsDict);
 
         var labelHtmlAttributesDict = ConvertAnonymousObjectIfNeeded(labelHtmlAttributes, "form-check-label");
         var label = _html.LabelFor(expression, labelHtmlAttributesDict);
