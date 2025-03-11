@@ -287,6 +287,23 @@ To prevent rendering views from TempData, pass `false`:
 Note: The content of the alerts are not HTML encoded. RAW HTML will be rendered. Encode any user-generated strings you 
 pass to `AddAlert`.
 
+## Validation Errors
+
+This library offers a helper extension method to retrieve a string array of validation error messages for a given model 
+property.
+
+```csharp
+// Controller (.cs)
+ModelState.GetErrorMessages(nameof(ExampleViewModel.ModelProperty));
+
+// View (.cshtml)
+ViewData.ModelState.GetErrorMessages(nameof(ExampleViewModel.ModelProperty));
+```
+
+If validation fails, the output of `GetErrorMessages` is `["Invalid message"]`. For a property with no validation 
+errors, this method will return an empty string. If the property does not exist in the model, the method will throw a 
+`KeyNotFoundException`.
+
 ## Pagination
 This package features the `BsPagination` class with methods for rendering Bootstrap pagination links.
 
