@@ -1,21 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using BootstrapHtmlHelpers;
 
 namespace Web;
 
 public class TheModelWithEverything
 {
     [Display(Prompt = "Enter your name", Description = "We, like, really need your name!")]
+    [HtmlAttribute("data-custom-attr", "custom-value")]
     public string Name { get; set; } = null!;// basic text box
 
     public string Email { get; set; } = null!; // email text box
 
+    [HtmlAttribute("data-custom-attr", "custom-value")]
     public string Password { get; set; } = null!; // password box
 
+    [HtmlAttribute("data-custom-attr", "custom-value")]
     public DateTime? Birthday { get; set; } // date picker
 
     [Required]
     [Display(Name = "Can you even?", Description = "Select Yes if you can even. Select No if you can't even.")]
     [CantEven(ErrorMessage = "Come on man, you can't even get this right!")]
+    [HtmlAttribute("data-custom-attr", "custom-value")]
     public bool? CanYouEven { get; set; } // yes/no radio
 
     [Required]
@@ -24,9 +29,11 @@ public class TheModelWithEverything
 
     [Display(Name = "Again I ask, Can you even?", Description = "Repeat question")]
     [CantEven(ErrorMessage = "This must be true to continue!")]
+    [HtmlAttribute("data-custom-attr", "custom-value")]
     public bool CanYouEvenAgain { get; set; } // checkbox
 
     [Display(Description = "Do you agree?")]
+    [HtmlAttribute("data-custom-attr", "custom-value")]
     public SomeOptions SelectEnumQ { get; set; }
 
     [Display(Name = "Select all that apply", Description = "Then select more.")]
@@ -53,6 +60,8 @@ public class TheModelWithEverything
 public class ClassWithMoreStuff
 {
     [Display(Name = "Variable 1")]
+    [HtmlAttribute("data-custom-attr", "custom-value")]
+    [HtmlAttribute("data-custom-attr-2", "custom-value")]
     public string Var1 { get; set; }
 }
 

@@ -1,11 +1,10 @@
-using System.Collections;
 using System.Linq.Expressions;
 using System.Text;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.Extensions.Primitives;
 
 namespace BootstrapHtmlHelpers;
 
@@ -100,11 +99,13 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
     {
+        var metadata = MetadataFor(expression);
         var validationAttrs = ConvertAnonymousObjectIfNeeded(validationHtmlAttributes, "invalid-feedback");
         var errorMessage = _html.ValidationMessageFor(expression, null, validationAttrs, "div");
 
         var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes);
         AddFormControlCssClassesFor(expression, attrsDict, "form-check-input ");
+        AddHtmlAttributeAttributesFor(expression, attrsDict, metadata);
         var checkbox = _html.CheckBoxFor(expression, attrsDict);
 
         var labelHtmlAttributesDict = ConvertAnonymousObjectIfNeeded(labelHtmlAttributes, "form-check-label");
@@ -117,7 +118,7 @@ public class BootstrapTagBuilder<TModel>
         checkboxDiv.InnerHtml.AppendHtml(label);
 
         if (errorMessage != null) checkboxDiv.InnerHtml.AppendHtml(errorMessage);
-        checkboxDiv.AppendElement("div", DescriptionFor(expression), "form-text");
+        checkboxDiv.AppendElement("div", DescriptionFor(expression, metadata), "form-text");
 
         return checkboxDiv;
     }
@@ -218,9 +219,11 @@ public class BootstrapTagBuilder<TModel>
 
     public IHtmlContent LabelFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
-        object? htmlAttributes = null)
+        object? htmlAttributes = null,
+        ModelMetadata? metadata = null
+        )
     {
-        var metadata = MetadataFor(expression);
+        metadata ??= MetadataFor(expression);
         var requiredCssClass = metadata.IsRequired ? "is-required" : "";
         var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes, $"form-label {requiredCssClass}");
         return _html.LabelFor(expression, attrsDict);
@@ -229,10 +232,13 @@ public class BootstrapTagBuilder<TModel>
     public IHtmlContent TextBoxControlFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
         object? htmlAttributes = null,
-        string? format = null)
+        string? format = null,
+        ModelMetadata? metadata = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(htmlAttributes);
         AddFormControlCssClassesFor(expression, attrsDict);
+        AddHtmlAttributeAttributesFor(expression, attrsDict, metadata);
+        
         return _html.TextBoxFor(expression, format, attrsDict);
     }
 
@@ -240,29 +246,36 @@ public class BootstrapTagBuilder<TModel>
         Expression<Func<TModel, TProperty>> expression,
         int rows,
         int columns,
-        object? inputAttributes = null)
+        object? inputAttributes = null,
+        ModelMetadata? metadata = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
         AddFormControlCssClassesFor(expression, attrsDict);
+        AddHtmlAttributeAttributesFor(expression, attrsDict, metadata);
+        
         return _html.TextAreaFor(expression, rows, columns, attrsDict);
     }
 
     public IHtmlContent PasswordControlFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
-        object? inputAttributes = null)
+        object? inputAttributes = null,
+        ModelMetadata? metadata = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
         AddFormControlCssClassesFor(expression, attrsDict);
+        AddHtmlAttributeAttributesFor(expression, attrsDict, metadata);
         return _html.PasswordFor(expression, attrsDict);
     }
 
     public IHtmlContent DatePickerControlFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
-        object? inputAttributes = null)
+        object? inputAttributes = null,
+        ModelMetadata? metadata = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(inputAttributes);
         attrsDict["type"] = "date";
         AddFormControlCssClassesFor(expression, attrsDict);
+        AddHtmlAttributeAttributesFor(expression, attrsDict, metadata);
         return _html.TextBoxFor(expression, "{0:yyyy-MM-dd}", attrsDict);
     }
 
@@ -350,10 +363,12 @@ public class BootstrapTagBuilder<TModel>
         bool displayEmptyFirstValue = true,
         string? emptyFirstValueText = null,
         bool emptyFirstValueDisabled = true,
-        object? selectHtmlAttributes = null)
+        object? selectHtmlAttributes = null,
+        ModelMetadata? metadata = null)
     {
         var attrsDict = ConvertAnonymousObjectIfNeeded(selectHtmlAttributes);
         AddFormControlCssClassesFor(expression, attrsDict, "form-select");
+        AddHtmlAttributeAttributesFor(expression, attrsDict, metadata);
         var selectItems = items.ToList();
 
         if (displayEmptyFirstValue)
@@ -370,25 +385,28 @@ public class BootstrapTagBuilder<TModel>
 
     public IHtmlContent EnumDropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty>> expression,
-        object? selectHtmlAttributes = null) where TProperty : struct, Enum
+        object? selectHtmlAttributes = null,
+        ModelMetadata? metadata = null) where TProperty : struct, Enum
     {
         var selectList =
             _html.GetEnumSelectList<TProperty>(); // great built in funtion... it knows which enum is already selected!
         return DropDownListControlFor(expression, selectList, displayEmptyFirstValue: false,
-            selectHtmlAttributes: selectHtmlAttributes);
+            selectHtmlAttributes: selectHtmlAttributes, metadata: metadata);
     }
 
     public IHtmlContent NullableEnumDropDownListControlFor<TProperty>(
         Expression<Func<TModel, TProperty?>> expression,
         object? selectHtmlAttributes = null,
         string? emptyFirstValueText = null,
-        bool emptyFirstValueDisabled = true) where TProperty : struct, Enum
+        bool emptyFirstValueDisabled = true,
+        ModelMetadata? metadata = null) where TProperty : struct, Enum
     {
         var selectList = _html.GetEnumSelectList<TProperty>();
         return DropDownListControlFor(expression, selectList,
             emptyFirstValueText: emptyFirstValueText,
             emptyFirstValueDisabled: emptyFirstValueDisabled,
-            selectHtmlAttributes: selectHtmlAttributes);
+            selectHtmlAttributes: selectHtmlAttributes, 
+            metadata: metadata);
     }
 
     public IHtmlContent EnumRadioGroupControlFor<TProperty>(
@@ -438,7 +456,8 @@ public class BootstrapTagBuilder<TModel>
         IHtmlContent control,
         object? labelHtmlAttributes = null,
         object? containerHtmlAttributes = null,
-        object? validationHtmlAttributes = null)
+        object? validationHtmlAttributes = null,
+        ModelMetadata? metadata = null)
     {
         var tagBuilder = new TagBuilder("div");
         tagBuilder.AddAttributes(ConvertAnonymousObjectIfNeeded(containerHtmlAttributes, $"mb-3"));
@@ -446,10 +465,10 @@ public class BootstrapTagBuilder<TModel>
         var validationAttrs = ConvertAnonymousObjectIfNeeded(validationHtmlAttributes, "invalid-feedback");
         var errorMessage = _html.ValidationMessageFor(expression, null, validationAttrs, "div");
 
-        tagBuilder.InnerHtml.AppendHtml(LabelFor(expression, labelHtmlAttributes));
+        tagBuilder.InnerHtml.AppendHtml(LabelFor(expression, labelHtmlAttributes, metadata));
         tagBuilder.InnerHtml.AppendHtml(control);
         if (errorMessage != null) tagBuilder.InnerHtml.AppendHtml(errorMessage);
-        tagBuilder.AppendElement("div", DescriptionFor(expression), "form-text");
+        tagBuilder.AppendElement("div", DescriptionFor(expression, metadata), "form-text");
         return tagBuilder;
     }
 
@@ -479,9 +498,10 @@ public class BootstrapTagBuilder<TModel>
         htmlAttributes["class"] = cssClass.ToString();
     }
 
-    public string? DescriptionFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
+    public string? DescriptionFor<TProperty>(Expression<Func<TModel, TProperty>> expression, 
+        ModelMetadata? metadata = null)
     {
-        var metadata = MetadataFor(expression);
+        metadata ??= MetadataFor(expression);
         return metadata.Description;
     }
 
@@ -562,6 +582,27 @@ public class BootstrapTagBuilder<TModel>
     private ModelMetadata MetadataFor<TProperty>(Expression<Func<TModel, TProperty>> expression)
     {
         return _expProv.CreateModelExpression(_html.ViewData, expression).Metadata;
+    }
+    
+    private void AddHtmlAttributeAttributesFor<TProperty>(Expression<Func<TModel, TProperty>> expression,
+        IDictionary<string, object> htmlAttributes, ModelMetadata? metadata = null)
+    {
+        metadata ??= MetadataFor(expression);
+
+        if (metadata is not DefaultModelMetadata defaultModelMetadata) return;
+        if (defaultModelMetadata.Attributes.PropertyAttributes == null) return;
+        
+        foreach (var attribute in defaultModelMetadata.Attributes.PropertyAttributes.OfType<HtmlAttributeAttribute>())
+        {
+            if (string.Equals(attribute.Name, "class", StringComparison.OrdinalIgnoreCase) &&
+                htmlAttributes.TryGetValue("class", out var existingClass))
+            {
+                htmlAttributes["class"] = $"{attribute.Value} {existingClass}";
+                continue;
+            }
+    
+            htmlAttributes.TryAdd(attribute.Name, attribute.Value);
+        }
     }
 
     /// <summary>

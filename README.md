@@ -169,6 +169,34 @@ Use `LabelFor(expression, htmlAttributes)` to take advantage of Bootstrap labels
 
 
 ## HTML Attributes
+BootstrapHtmlHelpers comes with `[HtmlAttribute]` that can be used to add HTML attributes to form controls by adding the 
+attribute to the property in the C# model.
+
+```cs
+public class ExampleViewModel
+{
+    [HtmlAttribute("data-custom-attr", "custom-value")]
+    public string ModelProperty { get; set; }
+}
+```
+
+```cshtml
+@bootstrap.TextBoxFor(m => m.ModelProperty)
+```
+
+The rendered output looks like:
+
+```html
+<div class="mb-3">
+    <label class="form-label" for="ModelProperty">ModelProperty</label>
+    <input class="form-control" id="ModelProperty" name="ModelProperty" type="text" value="" data-custom-attr="custom-value">
+    <div class="invalid-feedback field-validation-valid" data-valmsg-for="ModelProperty" data-valmsg-replace="true"></div>
+    <div class="form-text"></div>
+</div>
+```
+
+Only select helpers support `[HtmlAttribute]`. See the table below.
+
 All extensions that support the anonymous object for adding additional HTML attributes also 
 support passing HTML attributes of type `IDictionary<string,object>`. Note that passing 
 `IDictionary<string,string>` will exhibit unintended behavior.
@@ -203,27 +231,27 @@ There are three elements where elements can usually be applied:
 
 The following table lists out which components and methods support each attribute:
 
-| Method                               | Input Attributes           | Label Attributes | Validation Attributes | Container Attributes |
-|--------------------------------------|----------------------------|------------------|-----------------------|----------------------|
-| `TextBoxFor`                         | ✅ (`htmlAttributes`)       | ✅                | ✅                     | ✅                    |  
-| `TextAreaFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
-| `PasswordFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
-| `DatePickerFor`                      | ✅                          | ✅                | ✅                     | ✅                    |
-| `YesNoFor`                           | ❌                          | ✅                | ✅                     | ✅                    |
-| `CheckboxFor`                        | ✅                          | ✅                | ✅                     | ✅                    |
-| `CheckboxGroupFor`                   | ❌                          | ✅                | ✅                     | ✅                    |
-| `DropDownListFor`                    | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
-| `EnumDropDownListFor`                | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
-| `NullableEnumDropDownListFor`        | ✅ (`selectHtmlAttributes`) | ✅                | ✅                     | ✅                    |
-| `TextBoxControlFor`                  | ✅ (`htmlAttributes`)       | ❌                |                       | ❌                    |
-| `TextAreaControlFor`                 | ✅                          | ❌                |                       | ❌                    |
-| `PasswordControlFor`                 | ✅                          | ❌                |                       | ❌                    |
-| `YesNoControlFor`                    | ❌                          | ❌                |                       | ❌                    |
-| `CheckboxGroupControlFor`            | ❌                          | ❌                |                       | ❌                    |
-| `DropDownListControlFor`             | ✅ (`selectHtmlAttributes`) | ❌                |                       | ❌                    |
-| `EnumDropDownListControlFor`         | ✅ (`selectHtmlAttributes`) | ❌                |                       | ❌                    |
-| `NullableEnumDropDownListControlFor` | ✅ (`selectHtmlAttributes`) | ❌                |                       | ❌                    |
-| `FormGroupFor`                       | ❌                          | ✅                | ✅                     | ✅                    |
+| Method                               | `[HtmlAttribute]` | Input Attributes            | Label Attributes | Validation Attributes | Container Attributes |
+|--------------------------------------|:------------------|-----------------------------|------------------|-----------------------|----------------------|
+| `TextBoxFor`                         | ✅                | ✅ (`htmlAttributes`)       | ✅               | ✅                    | ✅                   |  
+| `TextAreaFor`                        | ✅                | ✅                          | ✅               | ✅                    | ✅                   |
+| `PasswordFor`                        | ✅                | ✅                          | ✅               | ✅                    | ✅                   |
+| `DatePickerFor`                      | ✅                | ✅                          | ✅               | ✅                    | ✅                   |
+| `YesNoFor`                           | ❌                | ❌                          | ✅               | ✅                    | ✅                   |
+| `CheckboxFor`                        | ✅                | ✅                          | ✅               | ✅                    | ✅                   |
+| `CheckboxGroupFor`                   | ❌                | ❌                          | ✅               | ✅                    | ✅                   |
+| `DropDownListFor`                    | ✅                | ✅ (`selectHtmlAttributes`) | ✅               | ✅                    | ✅                   |
+| `EnumDropDownListFor`                | ✅                | ✅ (`selectHtmlAttributes`) | ✅               | ✅                    | ✅                   |
+| `NullableEnumDropDownListFor`        | ✅                | ✅ (`selectHtmlAttributes`) | ✅               | ✅                    | ✅                   |
+| `TextBoxControlFor`                  | ✅                | ✅ (`htmlAttributes`)       | ❌               |                       | ❌                   |
+| `TextAreaControlFor`                 | ✅                | ✅                          | ❌               |                       | ❌                   |
+| `PasswordControlFor`                 | ✅                | ✅                          | ❌               |                       | ❌                   |
+| `YesNoControlFor`                    | ❌                | ❌                          | ❌               |                       | ❌                   |
+| `CheckboxGroupControlFor`            | ❌                | ❌                          | ❌               |                       | ❌                   |
+| `DropDownListControlFor`             | ✅                | ✅ (`selectHtmlAttributes`) | ❌               |                       | ❌                   |
+| `EnumDropDownListControlFor`         | ✅                | ✅ (`selectHtmlAttributes`) | ❌               |                       | ❌                   |
+| `NullableEnumDropDownListControlFor` | ✅                | ✅ (`selectHtmlAttributes`) | ❌               |                       | ❌                   |
+| `FormGroupFor`                       | ❌                | ❌                          | ✅               | ✅                    | ✅                   |
 
 ## Required Indicator
 Labels for the form groups are automatically given the CSS class `is-required` if the property
