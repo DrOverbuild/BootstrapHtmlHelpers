@@ -31,8 +31,10 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
     {
-        var textbox = TextBoxControlFor(expression, htmlAttributes, format);
-        return FormGroupFor(expression, textbox, labelHtmlAttributes, containerHtmlAttributes, validationHtmlAttributes);
+        var metadata = MetadataFor(expression);
+        var textbox = TextBoxControlFor(expression, htmlAttributes, format, metadata);
+        return FormGroupFor(expression, textbox, labelHtmlAttributes, containerHtmlAttributes, validationHtmlAttributes, 
+            metadata);
     }
 
     public IHtmlContent TextAreaFor<TProperty>(
@@ -44,8 +46,10 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
     {
-        var textarea = TextAreaControlFor(expression, rows, columns, inputAttributes);
-        return FormGroupFor(expression, textarea, labelHtmlAttributes, containerHtmlAttributes, validationHtmlAttributes);
+        var metadata = MetadataFor(expression);
+        var textarea = TextAreaControlFor(expression, rows, columns, inputAttributes, metadata);
+        return FormGroupFor(expression, textarea, labelHtmlAttributes, containerHtmlAttributes, 
+            validationHtmlAttributes, metadata);
     }
 
     public IHtmlContent PasswordFor<TProperty>(
@@ -55,8 +59,10 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
     {
-        var password = PasswordControlFor(expression, inputAttributes);
-        return FormGroupFor(expression, password, labelHtmlAttributes, containerHtmlAttributes, validationHtmlAttributes);
+        var metadata = MetadataFor(expression);
+        var password = PasswordControlFor(expression, inputAttributes, metadata);
+        return FormGroupFor(expression, password, labelHtmlAttributes, containerHtmlAttributes, 
+            validationHtmlAttributes, metadata);
     }
 
     public IHtmlContent DatePickerFor<TProperty>(
@@ -66,8 +72,10 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
     {
-        var textbox = DatePickerControlFor(expression, inputAttributes);
-        return FormGroupFor(expression, textbox, labelHtmlAttributes, containerHtmlAttributes, validationHtmlAttributes);
+        var metadata = MetadataFor(expression);
+        var textbox = DatePickerControlFor(expression, inputAttributes, metadata);
+        return FormGroupFor(expression, textbox, labelHtmlAttributes, containerHtmlAttributes, validationHtmlAttributes,
+            metadata);
     }
 
     public IHtmlContent YesNoFor(
@@ -146,10 +154,11 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null)
     {
+        var metadata = MetadataFor(expression);
         var control = DropDownListControlFor(expression, items, displayEmptyFirstValue, emptyFirstValueText,
-            emptyFirstValueDisabled, selectHtmlAttributes);
+            emptyFirstValueDisabled, selectHtmlAttributes, metadata);
         return FormGroupFor(expression, control, labelHtmlAttributes, containerHtmlAttributes,
-            validationHtmlAttributes);
+            validationHtmlAttributes, metadata);
     }
 
     public IHtmlContent EnumDropDownListFor<TProperty>(
@@ -159,11 +168,13 @@ public class BootstrapTagBuilder<TModel>
         object? containerHtmlAttributes = null,
         object? validationHtmlAttributes = null) where TProperty : struct, Enum
     {
-        var control = EnumDropDownListControlFor(expression, selectHtmlAttributes);
+        var metadata = MetadataFor(expression);
+        var control = EnumDropDownListControlFor(expression, selectHtmlAttributes, metadata);
         return FormGroupFor(expression, control,
             labelHtmlAttributes: labelHtmlAttributes,
             containerHtmlAttributes: containerHtmlAttributes,
-            validationHtmlAttributes: validationHtmlAttributes);
+            validationHtmlAttributes: validationHtmlAttributes,
+            metadata: metadata);
     }
 
     public IHtmlContent NullableEnumDropDownListFor<TProperty>(
@@ -175,12 +186,14 @@ public class BootstrapTagBuilder<TModel>
         string? emptyFirstValueText = null,
         bool emptyFirstValueDisabled = true) where TProperty : struct, Enum
     {
+        var metadata = MetadataFor(expression);
         var control = NullableEnumDropDownListControlFor(expression, selectHtmlAttributes, emptyFirstValueText,
-            emptyFirstValueDisabled);
+            emptyFirstValueDisabled, metadata);
         return FormGroupFor(expression, control,
             labelHtmlAttributes: labelHtmlAttributes,
             containerHtmlAttributes: containerHtmlAttributes,
-            validationHtmlAttributes: validationHtmlAttributes);
+            validationHtmlAttributes: validationHtmlAttributes,
+            metadata: metadata);
     }
 
     public IHtmlContent EnumRadioGroupFor<TProperty>(
